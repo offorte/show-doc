@@ -23,6 +23,7 @@ turn compact Markdown and semantic `shw-*` elements into readable HTML documents
 - Do not add lazy loading. Each release runtime is one self-contained JS file with optional CSS.
 - Keep Mermaid in `showdoc-mermaid.js`. Do not add Mermaid to the core `showdoc.js` bundle.
 - Use exact dependency versions.
+- Use `opt:` for a non-breaking optimization. It triggers a patch release, like `fix:`.
 - Format only with Oxfmt. Lint with Oxlint.
 
 ## Public API changes

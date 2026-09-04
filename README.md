@@ -108,6 +108,17 @@ pnpm agent:verify
 `pnpm agent:verify` checks formatting, lint, TypeScript, browser behavior, the Custom Elements
 Manifest, bundle limits, package contents, and unused code.
 
+## Releases
+
+Release Please reads Conventional Commit types on `main`. `fix:` and `opt:` prepare a patch release.
+`feat:` prepares a minor release. A type with `!`, or a `BREAKING CHANGE` footer, prepares a major
+release.
+
+Merging the Release Please pull request creates the GitHub release. The `Release package` workflow
+then verifies and publishes the npm package. After publication succeeds, it calls the separate
+`Deploy Pages` workflow with the release tag. `Deploy Pages` only deploys the example site. It can
+also run manually.
+
 ## About Offorte
 
 Offorte is automated proposal software that helps businesses create, send, and track beautiful,
