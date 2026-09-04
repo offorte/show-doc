@@ -2,7 +2,7 @@
 name: show-doc
 description: Create compact, readable standalone HTML documents with versioned Offorte ShowDoc components and Markdown when a human-facing artifact needs more visual structure than normal prose.
 metadata:
-  version: "0.0.1" # x-release-please-version
+  version: "0.0.2" # x-release-please-version
 ---
 
 # ShowDoc
@@ -26,7 +26,7 @@ starting point below when the document does not need Mermaid:
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script
       type="module"
-      src="https://cdn.jsdelivr.net/npm/@offorte/show-doc@0.0.1/dist/showdoc.js"
+      src="https://cdn.jsdelivr.net/npm/@offorte/show-doc@0.0.2/dist/showdoc.js"
     ></script>
     <title>Release decision</title>
   </head>
@@ -51,7 +51,7 @@ If the document uses Mermaid, replace the script in the starting point with the 
 ```html
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/@offorte/show-doc@0.0.1/dist/showdoc-mermaid.js"
+  src="https://cdn.jsdelivr.net/npm/@offorte/show-doc@0.0.2/dist/showdoc-mermaid.js"
 ></script>
 ```
 
