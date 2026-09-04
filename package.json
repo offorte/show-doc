@@ -57,7 +57,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "vite --host 127.0.0.1 --open /demo/",
     "serve": "pnpm build && node scripts/prepare-preview.mjs && vite preview --host 127.0.0.1 --port 4173 --strictPort --outDir .preview",
     "build": "vite build && vite build --mode mermaid && tsc -p tsconfig.build.json",
     "check:build": "node scripts/check-build.mjs",

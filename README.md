@@ -16,6 +16,15 @@ In one practical review, a normal artifact was estimated at **300 to 800 lines**
 was estimated at **40 to 80 lines of ShowDoc source**. This is an illustrative comparison, not a
 fixed benchmark. The exact reduction depends on the document.
 
+## Example
+
+Open [How Offorte ShowDoc works](https://offorte.github.io/show-doc/) to see a complete ShowDoc
+document. It explains the authoring model and shows the components in a real page.
+
+Then use **View Page Source** in your browser. The source contains compact `shw-*` elements,
+Markdown, and one versioned CDN script. It does not contain copied component markup or presentation
+CSS that an agent must maintain.
+
 ## What the skill creates
 
 The skill creates compact source that contains the meaning and layout decision:
@@ -40,10 +49,6 @@ Use ShowDoc for:
 
 ShowDoc is not intended for dashboards, forms, modals, or large interactive tools. Those need their
 own application code.
-
-See the complete [codebase overview artifact](./examples/codebase-overview.html). It uses ShowDoc to
-explain ShowDoc. Each release also publishes this artifact as the
-[live ShowDoc showcase](https://offorte.github.io/show-doc/).
 
 ## Install the skill
 
@@ -97,7 +102,7 @@ pnpm build
 pnpm agent:verify
 ```
 
-`pnpm serve` rebuilds the production bundle and serves the isolated showcase at
+`pnpm serve` rebuilds the package and serves the CDN-backed showcase at
 `http://127.0.0.1:4173`.
 
 `pnpm agent:verify` checks formatting, lint, TypeScript, browser behavior, the Custom Elements
