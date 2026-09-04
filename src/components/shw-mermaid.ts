@@ -28,7 +28,17 @@ function renderDiagram(source: string, theme: MermaidTheme): Promise<string> {
   const render = async (): Promise<string> => {
     diagramNumber += 1;
     mermaid.initialize({
+      htmlLabels: false,
       securityLevel: "strict",
+      secure: [
+        "secure",
+        "securityLevel",
+        "startOnLoad",
+        "maxTextSize",
+        "suppressErrorRendering",
+        "maxEdges",
+        "htmlLabels",
+      ],
       startOnLoad: false,
       suppressErrorRendering: true,
       theme,
