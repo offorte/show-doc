@@ -6,6 +6,7 @@ import { join } from "node:path";
 
 const packageManifest = JSON.parse(await readFile("package.json", "utf8"));
 const skillPath = "skills/show-doc/SKILL.md";
+const showcasePath = "examples/codebase-overview.html";
 const [
   readme,
   releaseConfigSource,
@@ -20,7 +21,7 @@ const [
   readFile(".release-please-manifest.json", "utf8"),
   readFile(".github/workflows/release.yml", "utf8"),
   readFile(".github/workflows/pages.yml", "utf8"),
-  readFile("examples/codebase-overview.html", "utf8"),
+  readFile(showcasePath, "utf8"),
   readFile(skillPath, "utf8"),
 ]);
 const releaseConfig = JSON.parse(releaseConfigSource);
@@ -36,7 +37,7 @@ assert.equal(releaseManifest["."], packageManifest.version);
 assert.equal(releaseConfig.packages["."]["package-name"], packageManifest.name);
 
 const releaseExtraFiles = releaseConfig.packages["."]["extra-files"].map(({ path }) => path);
-assert.deepEqual(releaseExtraFiles, [skillPath]);
+assert.deepEqual(releaseExtraFiles, [skillPath, showcasePath]);
 
 const cdnBase = `https://cdn.jsdelivr.net/npm/${packageManifest.name}@${packageManifest.version}/dist/`;
 const javascriptUrl = `${cdnBase}showdoc.js`;
