@@ -45,6 +45,10 @@ const mermaidJavascriptUrl = `${cdnBase}showdoc-mermaid.js`;
 
 assert.ok(skill.includes(javascriptUrl), `Skill must use ${javascriptUrl}.`);
 assert.ok(skill.includes(mermaidJavascriptUrl), `Skill must use ${mermaidJavascriptUrl}.`);
+assert.ok(
+  showcase.includes(`src="${mermaidJavascriptUrl}"`),
+  `Showcase must use ${mermaidJavascriptUrl}.`,
+);
 assert.ok(!skill.includes("showdoc.css"), "The public skill must use the one-script setup.");
 for (const [name, source] of [
   ["README", readme],

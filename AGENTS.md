@@ -10,7 +10,7 @@ turn compact Markdown and semantic `shw-*` elements into readable HTML documents
 - `src/styles/` owns generated global CSS and Shadow DOM typography CSS.
 - `skills/show-doc/SKILL.md` owns the agent-facing authoring API.
 - `demo/index.html` is the human-facing design example.
-- `examples/` owns isolated artifacts that load the local production bundle.
+- `examples/` owns isolated artifacts that load the current versioned CDN bundle.
 - `test/` verifies browser behavior against the built bundle.
 - `scripts/` verifies package and manifest contracts.
 
