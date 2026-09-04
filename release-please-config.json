@@ -9,6 +9,10 @@
         {
           "type": "generic",
           "path": "skills/show-doc/SKILL.md"
+        },
+        {
+          "type": "generic",
+          "path": "examples/codebase-overview.html"
         }
       ]
     }
