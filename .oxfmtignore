@@ -1,3 +1,4 @@
 demo/**/*.html
 examples/**/*.html
 .preview/
+CHANGELOG.md
