@@ -172,7 +172,7 @@ describe("Offorte ShowDoc", () => {
     expect(element.shadowRoot.querySelectorAll('th[scope="col"]')).to.have.length(3);
     expect(element.shadowRoot.querySelectorAll("tbody tr")).to.have.length(2);
     expect(element.shadowRoot.querySelector("tbody td").dataset.label).to.equal("Option");
-    expect(element.shadowRoot.querySelector("tbody tr td:last-child").textContent).to.equal(
+    expect(element.shadowRoot.querySelector("tbody tr td:last-child").textContent.trim()).to.equal(
       "Escaped | pipe",
     );
   });
