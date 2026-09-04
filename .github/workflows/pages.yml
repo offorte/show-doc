@@ -1,4 +1,4 @@
-name: Pages
+name: Deploy Pages
 
 on:
   workflow_call:
@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   deploy:
+    name: Deploy ShowDoc example
     if: github.repository == 'offorte/show-doc'
     runs-on: ubuntu-latest
     timeout-minutes: 15

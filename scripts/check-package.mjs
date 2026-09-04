@@ -35,6 +35,21 @@ assert.deepEqual(packageManifest.dependencies, { lit: "3.3.3" });
 assert.ok(skill.includes(`version: "${packageManifest.version}"`), "Skill version must match npm.");
 assert.equal(releaseManifest["."], packageManifest.version);
 assert.equal(releaseConfig.packages["."]["package-name"], packageManifest.name);
+assert.deepEqual(releaseConfig["changelog-sections"], [
+  { type: "feat", section: "Features" },
+  { type: "feature", section: "Features" },
+  { type: "fix", section: "Bug Fixes" },
+  { type: "opt", section: "Optimizations" },
+  { type: "perf", section: "Performance Improvements" },
+  { type: "revert", section: "Reverts" },
+  { type: "docs", section: "Documentation", hidden: true },
+  { type: "style", section: "Styles", hidden: true },
+  { type: "chore", section: "Miscellaneous Chores", hidden: true },
+  { type: "refactor", section: "Code Refactoring", hidden: true },
+  { type: "test", section: "Tests", hidden: true },
+  { type: "build", section: "Build System", hidden: true },
+  { type: "ci", section: "Continuous Integration", hidden: true },
+]);
 
 const releaseExtraFiles = releaseConfig.packages["."]["extra-files"].map(({ path }) => path);
 assert.deepEqual(releaseExtraFiles, [skillPath, showcasePath]);
@@ -42,13 +57,31 @@ assert.deepEqual(releaseExtraFiles, [skillPath, showcasePath]);
 const cdnBase = `https://cdn.jsdelivr.net/npm/${packageManifest.name}@${packageManifest.version}/dist/`;
 const javascriptUrl = `${cdnBase}showdoc.js`;
 const mermaidJavascriptUrl = `${cdnBase}showdoc-mermaid.js`;
+const showcaseHead = showcase.slice(showcase.indexOf("<head>"), showcase.indexOf("</head>"));
 
 assert.ok(skill.includes(javascriptUrl), `Skill must use ${javascriptUrl}.`);
 assert.ok(skill.includes(mermaidJavascriptUrl), `Skill must use ${mermaidJavascriptUrl}.`);
 assert.ok(
-  showcase.includes(`src="${mermaidJavascriptUrl}"`),
-  `Showcase must use ${mermaidJavascriptUrl}.`,
+  showcaseHead.includes(`src="${mermaidJavascriptUrl}"`),
+  `Showcase head must use ${mermaidJavascriptUrl}.`,
 );
+assert.ok(showcase.includes(javascriptUrl), `Showcase example must use ${javascriptUrl}.`);
+for (const [name, source] of [
+  ["skill", skill],
+  ["showcase", showcase],
+]) {
+  const cdnVersions = [
+    ...source.matchAll(
+      /https:\/\/cdn\.jsdelivr\.net\/npm\/@offorte\/show-doc@([^/]+)\/dist\/showdoc(?:-mermaid)?\.js/gu,
+    ),
+  ].map((match) => match[1]);
+
+  assert.ok(cdnVersions.length > 0, `${name} must contain a ShowDoc CDN URL.`);
+  assert.ok(
+    cdnVersions.every((version) => version === packageManifest.version),
+    `${name} CDN URLs must use ${packageManifest.version}.`,
+  );
+}
 assert.ok(!skill.includes("showdoc.css"), "The public skill must use the one-script setup.");
 for (const [name, source] of [
   ["README", readme],
@@ -67,11 +100,19 @@ assert.ok(
   "README must link to the GitHub Pages showcase.",
 );
 assert.ok(
-  releaseWorkflow.includes("uses: ./.github/workflows/pages.yml") &&
+  releaseWorkflow.startsWith("name: Release package\n") &&
+    releaseWorkflow.includes("name: Prepare GitHub release") &&
+    releaseWorkflow.includes("name: Publish package to npm") &&
+    releaseWorkflow.includes("name: Deploy released Pages site") &&
+    releaseWorkflow.includes("- publish_package") &&
+    releaseWorkflow.includes("uses: ./.github/workflows/pages.yml") &&
+    releaseWorkflow.includes("ref: ${{ needs.prepare_release.outputs.tag_name }}") &&
+    pagesWorkflow.startsWith("name: Deploy Pages\n") &&
+    pagesWorkflow.includes("name: Deploy ShowDoc example") &&
     pagesWorkflow.includes("actions/upload-pages-artifact@") &&
     pagesWorkflow.includes("actions/deploy-pages@") &&
     pagesWorkflow.includes("path: .preview"),
-  "The release and Pages workflows must publish the production showcase.",
+  "A successful package release must deploy the versioned production showcase.",
 );
 
 const npmCache = await mkdtemp(join(tmpdir(), "show-doc-npm-cache-"));
