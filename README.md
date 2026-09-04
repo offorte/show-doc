@@ -2,19 +2,15 @@
 
 **Write for agents. Render for people.**
 
-ShowDoc is an agent skill for Codex, Claude Code, and other compatible coding agents. It turns
-reports, plans, reviews, and explanations into polished HTML documents. You describe the document.
-The skill handles the structure, components, Markdown, and browser setup.
+ShowDoc is an agent skill for Codex, Claude Code, and other compatible coding agents. It replaces
+separate Markdown and HTML versions with one shared HTML artifact for agents and people.
 
-Agents work well with Markdown. It is compact, easy to scan, and cheap to change. People often need
-more visual structure. Clear type, spacing, status, columns, code, and optional detail make complex
-documents easier to read.
+An agent writes compact Markdown and semantic `shw-*` elements. One versioned JavaScript include
+provides the components, Markdown rendering, presentation DOM, and CSS.
 
-Normal HTML artifacts solve the visual problem. They often repeat hundreds of lines of HTML, CSS,
-and JavaScript. That source is expensive for an agent to inspect whenever one sentence changes.
-
-The ShowDoc skill keeps the source small. It guides an agent to write Markdown and semantic `shw-*`
-elements. ShowDoc turns that source into a polished document.
+The source DOM stays small and focused on content. Agents can read and update it without sorting
+through repeated presentation code. People get clear type, spacing, status, columns, code, and
+optional detail. There is no second version to keep in sync.
 
 In one practical review, a normal artifact was estimated at **300 to 800 lines**. The same document
 was estimated at **40 to 80 lines of ShowDoc source**. This is an illustrative comparison, not a
