@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/fallow/schema.json",
+  "entry": [
+    "src/index.ts",
+    "src/mermaid.ts",
+    "test/**/*.test.js",
+    "scripts/**/*.mjs",
+    "vite.config.ts",
+    "web-test-runner.config.mjs",
+    "custom-elements-manifest.config.mjs",
+  ],
+  // Lit calls these ReactiveController lifecycle methods through its controller contract.
+  "usedClassMembers": [
+    {
+      "implements": "ReactiveController",
+      "members": ["hostConnected", "hostDisconnected"],
+    },
+  ],
+  // Tailwind reads its packages from CSS. Vite bundles the other packages into the published JS.
+  // Consumers do not import those implementation packages at runtime.
+  "ignoreDependencies": [
+    "@tailwindcss/typography",
+    "mermaid",
+    "micromark",
+    "micromark-extension-gfm-strikethrough",
+    "micromark-extension-gfm-task-list-item",
+    "prismjs",
+    "tailwindcss",
+  ],
+}

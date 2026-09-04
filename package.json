@@ -1,0 +1,106 @@
+{
+  "name": "@offorte/show-doc",
+  "version": "0.0.1",
+  "description": "Agent skill and web components for polished, human-readable HTML documents.",
+  "keywords": [
+    "documentation",
+    "html-artifacts",
+    "lit",
+    "markdown",
+    "tailwindcss",
+    "web-components"
+  ],
+  "homepage": "https://github.com/offorte/show-doc#readme",
+  "bugs": {
+    "url": "https://github.com/offorte/show-doc/issues"
+  },
+  "license": "MIT",
+  "author": "Offorte",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/offorte/show-doc.git"
+  },
+  "files": [
+    "dist/THIRD_PARTY_LICENSES.md",
+    "dist/showdoc.js",
+    "dist/showdoc-mermaid.js",
+    "dist/types/components",
+    "dist/types/index.d.ts",
+    "dist/types/mermaid.d.ts",
+    "dist/types/shw-tone.d.ts",
+    "custom-elements.json",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./dist/showdoc.js",
+    "./dist/showdoc-mermaid.js"
+  ],
+  "main": "./dist/showdoc.js",
+  "module": "./dist/showdoc.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/showdoc.js"
+    },
+    "./mermaid": {
+      "types": "./dist/types/mermaid.d.ts",
+      "import": "./dist/showdoc-mermaid.js"
+    },
+    "./custom-elements.json": "./custom-elements.json",
+    "./skill": "./skills/show-doc/SKILL.md"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "serve": "pnpm build && node scripts/prepare-preview.mjs && vite preview --host 127.0.0.1 --port 4173 --strictPort --outDir .preview",
+    "build": "vite build && vite build --mode mermaid && tsc -p tsconfig.build.json",
+    "check:build": "node scripts/check-build.mjs",
+    "check:package": "node scripts/check-package.mjs",
+    "manifest": "cem analyze --litelement --globs \"src/components/*.ts\"",
+    "manifest:check": "pnpm manifest && node scripts/check-manifest.mjs",
+    "lint": "oxlint src test scripts vite.config.ts web-test-runner.config.mjs custom-elements-manifest.config.mjs",
+    "format": "oxfmt . --write --ignore-path .oxfmtignore",
+    "format:check": "oxfmt . --check --ignore-path .oxfmtignore",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm build && pnpm test:browser",
+    "test:browser": "web-test-runner \"test/**/*.test.js\" --config web-test-runner.config.mjs",
+    "fallow:check": "fallow --format compact --fail-on-issues --summary",
+    "verify:source": "pnpm format:check && pnpm lint && pnpm typecheck",
+    "verify:build": "pnpm test:browser && pnpm manifest:check && pnpm check:build && pnpm check:package && pnpm fallow:check",
+    "agent:verify": "pnpm verify:source && pnpm build && pnpm verify:build",
+    "prepack": "pnpm build && pnpm manifest:check && pnpm check:build && pnpm check:package"
+  },
+  "dependencies": {
+    "lit": "3.3.3"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "0.11.0",
+    "@open-wc/testing": "5.0.0",
+    "@tailwindcss/typography": "0.5.20",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "26.3.0",
+    "@types/prismjs": "1.26.6",
+    "@web/test-runner": "1.0.0",
+    "@web/test-runner-playwright": "1.0.0",
+    "fallow": "3.18.0",
+    "mermaid": "11.17.2",
+    "micromark": "4.0.2",
+    "micromark-extension-gfm-strikethrough": "2.1.0",
+    "micromark-extension-gfm-task-list-item": "2.1.0",
+    "oxfmt": "0.65.0",
+    "oxlint": "1.80.0",
+    "playwright": "1.62.1",
+    "prismjs": "1.30.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vite": "8.2.2"
+  },
+  "packageManager": "pnpm@10.30.0",
+  "customElements": "custom-elements.json"
+}

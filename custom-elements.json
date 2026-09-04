@@ -1,0 +1,1025 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "dist/showdoc.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Shows a short status or category label.",
+          "name": "ShwBadge",
+          "slots": [
+            {
+              "description": "Short status or category text.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "tone",
+              "privacy": "public",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"neutral\"",
+              "description": "Visual meaning of the badge.",
+              "attribute": "tone",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "tone",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"neutral\"",
+              "description": "Visual meaning of the badge.",
+              "fieldName": "tone"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-badge",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Highlights a short Markdown message.",
+          "name": "ShwCallout",
+          "members": [
+            {
+              "kind": "field",
+              "name": "heading",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional callout heading.",
+              "attribute": "heading"
+            },
+            {
+              "kind": "field",
+              "name": "tone",
+              "privacy": "public",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"info\"",
+              "description": "Visual meaning of the callout.",
+              "attribute": "tone",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional callout heading.",
+              "fieldName": "heading"
+            },
+            {
+              "name": "tone",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"info\"",
+              "description": "Visual meaning of the callout.",
+              "fieldName": "tone"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-callout",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Groups one focused idea in a bordered card with an optional badge.",
+          "name": "ShwCard",
+          "members": [
+            {
+              "kind": "field",
+              "name": "heading",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional card heading.",
+              "attribute": "heading"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short badge label above the heading.",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "tone",
+              "privacy": "public",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"neutral\"",
+              "description": "Visual meaning of the optional badge.",
+              "attribute": "tone",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional card heading.",
+              "fieldName": "heading"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short badge label above the heading.",
+              "fieldName": "label"
+            },
+            {
+              "name": "tone",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"neutral\"",
+              "description": "Visual meaning of the optional badge.",
+              "fieldName": "tone"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-card",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Shows a syntax-highlighted code block with an optional filename.",
+          "name": "ShwCode",
+          "members": [
+            {
+              "kind": "field",
+              "name": "filename",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional filename shown above the code.",
+              "attribute": "filename"
+            },
+            {
+              "kind": "field",
+              "name": "language",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"text\"",
+              "description": "Syntax language. Supported values are html, js, ts, and json.",
+              "attribute": "language"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "filename",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional filename shown above the code.",
+              "fieldName": "filename"
+            },
+            {
+              "name": "language",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"text\"",
+              "description": "Syntax language. Supported values are html, js, ts, and json.",
+              "fieldName": "language"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-code",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Hides optional Markdown details behind a native disclosure control.",
+          "name": "ShwCollapsible",
+          "members": [
+            {
+              "kind": "field",
+              "name": "open",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the disclosure starts open.",
+              "attribute": "open",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "summary",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Details\"",
+              "description": "Label for the disclosure control.",
+              "attribute": "summary"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "open",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the disclosure starts open.",
+              "fieldName": "open"
+            },
+            {
+              "name": "summary",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Details\"",
+              "description": "Label for the disclosure control.",
+              "fieldName": "summary"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-collapsible",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Provides the page and document canvas for a ShowDoc artifact.",
+          "name": "ShwDoc",
+          "slots": [
+            {
+              "description": "The complete visible document.",
+              "name": ""
+            }
+          ],
+          "members": [],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-doc",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Frames an image, SVG, or diagram with an optional caption.",
+          "name": "ShwFigure",
+          "slots": [
+            {
+              "description": "The image, SVG, or diagram.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "caption",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional plain-text caption below the visual.",
+              "attribute": "caption"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "caption",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional plain-text caption below the visual.",
+              "fieldName": "caption"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-figure",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Arranges child blocks in one to four responsive columns.",
+          "name": "ShwGrid",
+          "slots": [
+            {
+              "description": "The blocks arranged by the grid.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "columns",
+              "privacy": "public",
+              "type": {
+                "text": "1 | 2 | 3 | 4"
+              },
+              "default": "2",
+              "description": "Number of columns. Supported values are 1, 2, 3, and 4.",
+              "attribute": "columns",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "columns",
+              "type": {
+                "text": "1 | 2 | 3 | 4"
+              },
+              "default": "2",
+              "description": "Number of columns. Supported values are 1, 2, 3, and 4.",
+              "fieldName": "columns"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-grid",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Renders a document title and an optional Markdown introduction.",
+          "name": "ShwHeader",
+          "members": [
+            {
+              "kind": "field",
+              "name": "eyebrow",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Short label above the main heading.",
+              "attribute": "eyebrow"
+            },
+            {
+              "kind": "field",
+              "name": "heading",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Main document heading.",
+              "attribute": "heading"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "eyebrow",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Short label above the main heading.",
+              "fieldName": "eyebrow"
+            },
+            {
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Main document heading.",
+              "fieldName": "heading"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-header",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Renders safe CommonMark from its light DOM text.",
+          "name": "ShwMarkdown",
+          "members": [],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-markdown",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Groups related document blocks under a heading divider and optional short introduction.",
+          "name": "ShwSection",
+          "slots": [
+            {
+              "description": "The document blocks in the section.",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "heading",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional section heading.",
+              "attribute": "heading"
+            },
+            {
+              "kind": "field",
+              "name": "intro",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short context beside the section heading.",
+              "attribute": "intro"
+            },
+            {
+              "kind": "field",
+              "name": "level",
+              "privacy": "public",
+              "type": {
+                "text": "2 | 3"
+              },
+              "default": "2",
+              "description": "Heading level. Supported values are 2 and 3.",
+              "attribute": "level"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional section heading.",
+              "fieldName": "heading"
+            },
+            {
+              "name": "intro",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short context beside the section heading.",
+              "fieldName": "intro"
+            },
+            {
+              "name": "level",
+              "type": {
+                "text": "2 | 3"
+              },
+              "default": "2",
+              "description": "Heading level. Supported values are 2 and 3.",
+              "fieldName": "level"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-section",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Shows one prominent value with a label and optional change.",
+          "name": "ShwStat",
+          "members": [
+            {
+              "kind": "field",
+              "name": "change",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short change or context below the value.",
+              "attribute": "change"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Short description of the value.",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "tone",
+              "privacy": "public",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"neutral\"",
+              "description": "Visual meaning of the change.",
+              "attribute": "tone",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Prominent value.",
+              "attribute": "value"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "change",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional short change or context below the value.",
+              "fieldName": "change"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Short description of the value.",
+              "fieldName": "label"
+            },
+            {
+              "name": "tone",
+              "type": {
+                "text": "ShwTone"
+              },
+              "default": "\"neutral\"",
+              "description": "Visual meaning of the change.",
+              "fieldName": "tone"
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Prominent value.",
+              "fieldName": "value"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-stat",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Turns a compact numbered Markdown list into a visual sequence.",
+          "name": "ShwSteps",
+          "members": [],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-steps",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Presents a short Markdown overview before the document details.",
+          "name": "ShwSummary",
+          "members": [
+            {
+              "kind": "field",
+              "name": "heading",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Summary\"",
+              "description": "Short label above the overview.",
+              "attribute": "heading"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Summary\"",
+              "description": "Short label above the overview.",
+              "fieldName": "heading"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-summary",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "Renders pipe-separated light DOM text as a semantic table.",
+          "name": "ShwTable",
+          "members": [
+            {
+              "kind": "field",
+              "name": "caption",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional accessible table caption.",
+              "attribute": "caption"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "caption",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Optional accessible table caption.",
+              "fieldName": "caption"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-table",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ShwBadge",
+          "declaration": {
+            "name": "ShwBadge",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-badge",
+          "declaration": {
+            "name": "ShwBadge",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwCallout",
+          "declaration": {
+            "name": "ShwCallout",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-callout",
+          "declaration": {
+            "name": "ShwCallout",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwCard",
+          "declaration": {
+            "name": "ShwCard",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-card",
+          "declaration": {
+            "name": "ShwCard",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwCode",
+          "declaration": {
+            "name": "ShwCode",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-code",
+          "declaration": {
+            "name": "ShwCode",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwCollapsible",
+          "declaration": {
+            "name": "ShwCollapsible",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-collapsible",
+          "declaration": {
+            "name": "ShwCollapsible",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwDoc",
+          "declaration": {
+            "name": "ShwDoc",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-doc",
+          "declaration": {
+            "name": "ShwDoc",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwFigure",
+          "declaration": {
+            "name": "ShwFigure",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-figure",
+          "declaration": {
+            "name": "ShwFigure",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwGrid",
+          "declaration": {
+            "name": "ShwGrid",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-grid",
+          "declaration": {
+            "name": "ShwGrid",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwHeader",
+          "declaration": {
+            "name": "ShwHeader",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-header",
+          "declaration": {
+            "name": "ShwHeader",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwMarkdown",
+          "declaration": {
+            "name": "ShwMarkdown",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-markdown",
+          "declaration": {
+            "name": "ShwMarkdown",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwSection",
+          "declaration": {
+            "name": "ShwSection",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-section",
+          "declaration": {
+            "name": "ShwSection",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwStat",
+          "declaration": {
+            "name": "ShwStat",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-stat",
+          "declaration": {
+            "name": "ShwStat",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwSteps",
+          "declaration": {
+            "name": "ShwSteps",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-steps",
+          "declaration": {
+            "name": "ShwSteps",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwSummary",
+          "declaration": {
+            "name": "ShwSummary",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-summary",
+          "declaration": {
+            "name": "ShwSummary",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "ShwTable",
+          "declaration": {
+            "name": "ShwTable",
+            "module": "dist/showdoc.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-table",
+          "declaration": {
+            "name": "ShwTable",
+            "module": "dist/showdoc.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "dist/showdoc-mermaid.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Renders Mermaid source as a responsive diagram.",
+          "name": "ShwMermaid",
+          "members": [
+            {
+              "kind": "field",
+              "name": "label",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Diagram\"",
+              "description": "Accessible name for the rendered diagram.",
+              "attribute": "label"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Diagram\"",
+              "description": "Accessible name for the rendered diagram.",
+              "fieldName": "label"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "shw-mermaid",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ShwMermaid",
+          "declaration": {
+            "name": "ShwMermaid",
+            "module": "dist/showdoc-mermaid.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "shw-mermaid",
+          "declaration": {
+            "name": "ShwMermaid",
+            "module": "dist/showdoc-mermaid.js"
+          }
+        }
+      ]
+    }
+  ]
+}

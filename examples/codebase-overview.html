@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="How Offorte ShowDoc keeps agent-authored HTML compact." />
+    <script type="module" src="../dist/showdoc-mermaid.js"></script>
+    <title>How Offorte ShowDoc works</title>
+  </head>
+  <body>
+    <shw-doc>
+      <shw-header heading="How ShowDoc works" eyebrow="Agent-authored HTML">
+        Agents write compact **Markdown** and semantic `shw-*` elements. People receive a clear,
+        responsive document without hundreds of lines of repeated presentation code.
+      </shw-header>
+
+      <shw-summary heading="The purpose">
+        Keep the source efficient for agents and make the result comfortable for humans to read.
+        One versioned JavaScript file provides the components, Markdown rendering, and CSS.
+      </shw-summary>
+
+      <shw-section heading="A smaller source" intro="An illustrative comparison from an early review.">
+        <shw-grid columns="3">
+          <shw-stat label="Normal artifact" value="300–800" change="HTML and CSS lines" tone="warning"></shw-stat>
+          <shw-stat label="ShowDoc artifact" value="40–80" change="Content-focused lines" tone="success"></shw-stat>
+          <shw-stat label="Artifact setup" value="1" change="Versioned script" tone="info"></shw-stat>
+        </shw-grid>
+
+        <shw-callout heading="These numbers are illustrative" tone="neutral">
+          The exact reduction depends on the document. The useful result is simpler editing: a text
+          change stays a text change instead of becoming a DOM and CSS change.
+        </shw-callout>
+      </shw-section>
+
+      <shw-section heading="The complete setup" intro="The browser receives one script and semantic content.">
+        <shw-code filename="artifact.html" language="html">
+          &lt;script type="module"
+            src="https://cdn.jsdelivr.net/npm/@offorte/show-doc@0.0.1/dist/showdoc.js">&lt;/script>
+
+          &lt;shw-doc>
+            &lt;shw-header heading="Project review">A short **Markdown** lead.&lt;/shw-header>
+            &lt;shw-summary>The release is **ready**.&lt;/shw-summary>
+          &lt;/shw-doc>
+        </shw-code>
+
+        <shw-table caption="Who owns what">
+          Layer | Responsibility | Result
+          Artifact | **Meaning**, content, and layout choices | Small source
+          ShowDoc | Components, Markdown, typography, and themes | Consistent rendering
+          Browser | Standards-based HTML and Shadow DOM | Accessible document
+        </shw-table>
+      </shw-section>
+
+      <shw-section heading="From prompt to reader" intro="Each step has one job.">
+        <shw-figure caption="The artifact stays compact while ShowDoc owns its presentation.">
+          <shw-mermaid label="ShowDoc artifact flow">
+            flowchart LR
+              A[Agent writes compact source] --> B[ShowDoc renders the document]
+              B --> C[Person reads a clear page]
+          </shw-mermaid>
+        </shw-figure>
+
+        <shw-steps>
+          1. The agent chooses the smallest semantic component for each idea.
+          2. Markdown carries the prose, lists, links, tasks, and emphasis.
+          3. The ShowDoc bundle registers the components and installs the global CSS once.
+          4. Lit renders reliable Shadow DOM while theme variables keep the document adjustable.
+          5. The reader gets a responsive page that also prints cleanly.
+        </shw-steps>
+
+        <shw-collapsible summary="Where ShowDoc fits">
+          Use it for **reports, plans, reviews, decisions, and explanations**.
+
+          Do not use it for dashboards, forms, modals, or application-like tools. Those need custom
+          interaction and their own application code.
+        </shw-collapsible>
+      </shw-section>
+    </shw-doc>
+  </body>
+</html>

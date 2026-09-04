@@ -1,0 +1,99 @@
+@import "tailwindcss/theme.css" layer(theme) source(none);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+@source inline("flex flex-wrap grid hidden block inline-flex items-start items-center justify-between grid-cols-1 grid-cols-2 grid-cols-3 gap-2 gap-4 gap-6 gap-8 p-2 p-4 p-6 p-8 text-sm text-base text-lg text-xl text-2xl font-medium font-semibold font-bold rounded-lg rounded-xl border shadow-sm md:grid-cols-2 md:grid-cols-3");
+
+:where(:root) {
+  color-scheme: light dark;
+  --shw-color-page: light-dark(#f3f5f8, #0f1218);
+  --shw-color-surface: light-dark(#ffffff, #171b24);
+  --shw-color-surface-muted: light-dark(#f8fafc, #1d2330);
+  --shw-color-table-stripe: light-dark(rgb(248 250 252 / 58%), rgb(255 255 255 / 2%));
+  --shw-color-text: light-dark(#293244, #d9deea);
+  --shw-color-heading: light-dark(#101827, #f7f8fb);
+  --shw-color-muted: light-dark(#667085, #9aa4b5);
+  --shw-color-border: light-dark(#dde2ea, #303848);
+  --shw-color-accent: light-dark(#4f46e5, #a5b4fc);
+  --shw-color-accent-soft: light-dark(#eef2ff, #25284a);
+  --shw-color-on-accent: light-dark(#ffffff, #101827);
+  --shw-color-inline-code: light-dark(#f2f4f7, #242b38);
+  --shw-color-code-background: light-dark(#111827, #0b0e14);
+  --shw-color-code-chrome: light-dark(#1f2937, #111722);
+  --shw-color-code-text: light-dark(#e6eaf2, #e5e7eb);
+  --shw-color-code-muted: light-dark(#9ca3af, #94a3b8);
+  --shw-color-code-border: light-dark(rgb(255 255 255 / 12%), rgb(255 255 255 / 10%));
+  --shw-color-shadow: light-dark(rgb(15 23 42 / 10%), rgb(0 0 0 / 36%));
+  --shw-tone-info: light-dark(#175cd3, #93c5fd);
+  --shw-tone-info-soft: light-dark(#eff8ff, #172554);
+  --shw-tone-success: light-dark(#067647, #6ee7b7);
+  --shw-tone-success-soft: light-dark(#ecfdf3, #12382c);
+  --shw-tone-warning: light-dark(#b54708, #fcd34d);
+  --shw-tone-warning-soft: light-dark(#fffaeb, #3f2d12);
+  --shw-tone-danger: light-dark(#b42318, #fda4af);
+  --shw-tone-danger-soft: light-dark(#fef3f2, #451a22);
+  --shw-tone-neutral: light-dark(#475467, #cbd5e1);
+  --shw-tone-neutral-soft: light-dark(#f2f4f7, #27303d);
+  --shw-radius: 1rem;
+  --shw-content-width: 76rem;
+  --shw-reading-width: 70ch;
+  --shw-font-sans: Inter;
+}
+
+:where(:root[data-theme="light"]) {
+  color-scheme: light;
+}
+
+:where(:root[data-theme="dark"]) {
+  color-scheme: dark;
+}
+
+:where(:root[data-shw-theme="light"]) {
+  color-scheme: light;
+}
+
+:where(:root[data-shw-theme="dark"]) {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--shw-color-page);
+  color: var(--shw-color-text);
+  font-family:
+    var(--shw-font-sans),
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+}
+
+shw-doc,
+shw-header,
+shw-section,
+shw-grid,
+shw-card,
+shw-callout,
+shw-code,
+shw-figure,
+shw-table,
+shw-collapsible,
+shw-markdown,
+shw-mermaid,
+shw-summary,
+shw-stat,
+shw-steps {
+  display: block;
+}
+
+@media print {
+  html {
+    background: #ffffff;
+    color-scheme: light;
+  }
+}

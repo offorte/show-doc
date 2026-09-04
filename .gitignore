@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# Turbo
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+.history
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.playwright-mcp/
+
+# Misc
+*.tsbuildinfo
+*.log
+.preview/
+.fallow/

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Offorte ShowDoc component demonstration" />
+    <title>Offorte ShowDoc</title>
+    <script type="module" src="/src/mermaid.ts"></script>
+  </head>
+  <body>
+    <shw-doc>
+      <shw-header eyebrow="Offorte ShowDoc" heading="Clear documents with very little HTML">
+        Write the content as **Markdown**. Use a few semantic components for layout. ShowDoc turns
+        it into a calm and readable document.
+      </shw-header>
+
+      <shw-summary heading="In short">
+        Agents write **compact source**. People get a polished page. The document stays easy to
+        change because layout and typography live in ShowDoc.
+      </shw-summary>
+
+      <shw-section
+        heading="One source for agents and people"
+        intro="Use Markdown for the story. Add a component only when it gives the content more meaning."
+      >
+        <shw-markdown>
+          Agents get compact source. People get a polished document with a clear reading order,
+          comfortable spacing, and useful visual hierarchy.
+
+          ### The basic rules
+
+          * Use Markdown for prose.
+          * Use components only when they add meaning or layout.
+          * Change the theme with CSS variables instead of rewriting the document.
+        </shw-markdown>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <shw-badge tone="success">Ready</shw-badge>
+          <shw-badge tone="info">Compact</shw-badge>
+          <shw-badge tone="neutral">Themeable</shw-badge>
+        </div>
+
+        <shw-grid columns="3">
+          <shw-card heading="Short source" label="Agent friendly" tone="info">
+            Markdown keeps the content **predictable** and easy to edit.
+          </shw-card>
+
+          <shw-card heading="Clear reading" label="Human friendly" tone="success">
+            Tailwind Typography supplies calm and balanced `prose` defaults.
+          </shw-card>
+
+          <shw-card heading="Small API" label="Deliberate" tone="neutral">
+            Components handle repeated visual patterns without exposing their internal DOM.
+          </shw-card>
+        </shw-grid>
+      </shw-section>
+
+      <shw-section
+        heading="Compact structured data"
+        intro="Tables and optional details stay semantic without adding a large HTML structure."
+      >
+        <shw-callout heading="Choose the smallest useful component" tone="info">
+          Use a **card** for one grouped idea. Use a **callout** only when a message needs attention.
+        </shw-callout>
+
+        <shw-grid columns="3">
+          <shw-stat label="Setup files" value="1" change="One script" tone="success"></shw-stat>
+          <shw-stat label="Theme modes" value="3" change="Auto, light, dark" tone="info"></shw-stat>
+          <shw-stat label="Public elements" value="16" change="Small vocabulary" tone="neutral"></shw-stat>
+        </shw-grid>
+
+        <shw-table caption="ShowDoc building blocks">
+          Component | Purpose | Input
+          --- | --- | ---
+          shw-summary | Document overview | Markdown
+          shw-card | Grouped idea | Attributes + Markdown
+          shw-badge | Status or category | Plain text
+          shw-markdown | Rich text | CommonMark
+          shw-mermaid | Mermaid diagram | Diagram source
+          shw-stat | Prominent metric | Attributes
+          shw-steps | Numbered process | Markdown lines
+          shw-code | Highlighted code | Attributes + text
+          shw-grid | Responsive columns | Child blocks
+          shw-table | Semantic table | Pipe text + Markdown cells
+          shw-figure | Captioned visual | Slotted media
+          shw-collapsible | Optional detail | Markdown
+        </shw-table>
+
+        <shw-figure caption="One larger bundle adds Mermaid rendering without extra runtime requests.">
+          <shw-mermaid label="ShowDoc artifact flow">
+            flowchart LR
+              A[Compact source] --> B[ShowDoc]
+              B --> C[Readable artifact]
+          </shw-mermaid>
+        </shw-figure>
+
+        <shw-collapsible summary="Why use Shadow DOM?">
+          It keeps each component reliable. Theme variables still inherit into every component, so a
+          document can change its colors, type, radius, and width without knowing the internal DOM.
+        </shw-collapsible>
+      </shw-section>
+    </shw-doc>
+  </body>
+</html>
