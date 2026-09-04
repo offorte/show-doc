@@ -229,16 +229,36 @@ describe("Offorte ShowDoc", () => {
 
   it("renders Mermaid from the larger bundle", async () => {
     await import("../dist/showdoc-mermaid.js");
-    const element = await fixture(html`<shw-mermaid label="Release flow"></shw-mermaid>`);
+    const wrapper = await fixture(html`
+      <div style="width: 800px">
+        <shw-mermaid
+          label="Release flow"
+          style="
+            --shw-color-accent: #0f766e;
+            --shw-color-accent-soft: #ccfbf1;
+            --shw-color-heading: #134e4a;
+            --shw-font-sans: 'Courier New';
+          "
+        ></shw-mermaid>
+      </div>
+    `);
+    const element = wrapper.querySelector("shw-mermaid");
     element.textContent = "flowchart LR\nA[Write] --> B[Render] --> C[Read]";
     await aTimeout(0);
     const svg = await waitForMermaidSvg(element);
+    const node = svg.querySelector(".node rect");
+    const nodeLabel = svg.querySelector(".node text");
 
     expect(svg).not.to.equal(null);
     expect(element.shadowRoot.querySelector('[role="img"]').getAttribute("aria-label")).to.equal(
       "Release flow",
     );
     expect(svg.textContent).to.include("Write");
+    expect(getComputedStyle(node).fill).to.equal("rgb(204, 251, 241)");
+    expect(getComputedStyle(node).stroke).to.equal("rgb(15, 118, 110)");
+    expect(getComputedStyle(nodeLabel).fontFamily).to.include("Courier New");
+    expect(element.getBoundingClientRect().width).to.equal(wrapper.getBoundingClientRect().width);
+    expect(svg.getBoundingClientRect().width).to.be.lessThan(element.getBoundingClientRect().width);
   });
 
   it("removes executable content from Mermaid output", async () => {
