@@ -1,6 +1,6 @@
 {
   "name": "@offorte/show-doc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Agent skill and web components for polished, human-readable HTML documents.",
   "keywords": [
     "documentation",
