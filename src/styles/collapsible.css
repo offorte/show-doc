@@ -1,0 +1,97 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+details {
+  background: color-mix(
+    in srgb,
+    var(--shw-color-surface, #ffffff) 82%,
+    var(--shw-color-surface-muted, #f8fafc)
+  );
+  border: 1px solid var(--shw-color-border, #dde2ea);
+  border-radius: var(--shw-radius, 1rem);
+  overflow: clip;
+}
+
+summary {
+  align-items: center;
+  color: var(--shw-color-heading, #101827);
+  cursor: pointer;
+  display: flex;
+  font-weight: 700;
+  gap: 0.75rem;
+  line-height: 1.4;
+  list-style: none;
+  padding: 1rem 1.15rem;
+  user-select: none;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::before {
+  border-bottom: 0.12rem solid currentcolor;
+  border-right: 0.12rem solid currentcolor;
+  content: "";
+  flex: 0 0 auto;
+  height: 0.45rem;
+  margin-left: 0.15rem;
+  transform: rotate(-45deg);
+  transition: transform 160ms ease;
+  width: 0.45rem;
+}
+
+details[open] summary::before {
+  transform: rotate(45deg) translate(-0.1rem, -0.1rem);
+}
+
+summary:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--shw-color-accent, #4f46e5) 30%, transparent);
+  outline-offset: -3px;
+}
+
+.content {
+  border-top: 1px solid var(--shw-color-border, #dde2ea);
+  min-width: 0;
+  padding: 1rem 1.15rem 1.15rem;
+}
+
+slot {
+  display: grid;
+  gap: 1.25rem;
+}
+
+::slotted(*) {
+  min-width: 0;
+}
+
+shw-markdown {
+  --shw-reading-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  summary::before {
+    transition: none;
+  }
+}
+
+@media print {
+  details::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+
+  details {
+    overflow: visible;
+  }
+
+  summary {
+    break-after: avoid;
+  }
+
+  summary::before {
+    display: none;
+  }
+}

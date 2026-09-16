@@ -32,7 +32,10 @@ assert.equal(packageManifest.publishConfig.access, "public");
 assert.equal(packageManifest.exports["./skill"], `./${skillPath}`);
 assert.equal(packageManifest.exports["./styles.css"], undefined);
 assert.deepEqual(packageManifest.dependencies, { lit: "3.3.3" });
-assert.ok(skill.includes(`version: "${packageManifest.version}"`), "Skill version must match npm.");
+assert.ok(
+  skill.includes(`version: "${packageManifest.version}" # x-release-please-version`),
+  "Skill metadata must match npm and remain managed by Release Please.",
+);
 assert.equal(releaseManifest["."], packageManifest.version);
 assert.equal(releaseConfig.packages["."]["package-name"], packageManifest.name);
 assert.deepEqual(releaseConfig["changelog-sections"], [
@@ -57,18 +60,24 @@ assert.deepEqual(releaseExtraFiles, [skillPath, showcasePath]);
 const cdnBase = `https://cdn.jsdelivr.net/npm/${packageManifest.name}@${packageManifest.version}/dist/`;
 const javascriptUrl = `${cdnBase}showdoc.js`;
 const mermaidJavascriptUrl = `${cdnBase}showdoc-mermaid.js`;
+const latestCdnBase = `https://cdn.jsdelivr.net/npm/${packageManifest.name}@latest/dist/`;
 const showcaseHead = showcase.slice(showcase.indexOf("<head>"), showcase.indexOf("</head>"));
 
-assert.ok(skill.includes(javascriptUrl), `Skill must use ${javascriptUrl}.`);
-assert.ok(skill.includes(mermaidJavascriptUrl), `Skill must use ${mermaidJavascriptUrl}.`);
+for (const bundle of ["showdoc.js", "showdoc-mermaid.js"]) {
+  assert.ok(skill.includes(`${latestCdnBase}${bundle}`), `Skill must use @latest for ${bundle}.`);
+}
+assert.ok(
+  !skill.includes("x-release-please-start-version") && !skill.includes("x-release-please-end"),
+  "Skill runtime URLs must not be inside release version replacement blocks.",
+);
 assert.ok(
   showcaseHead.includes(`src="${mermaidJavascriptUrl}"`),
   `Showcase head must use ${mermaidJavascriptUrl}.`,
 );
 assert.ok(showcase.includes(javascriptUrl), `Showcase example must use ${javascriptUrl}.`);
-for (const [name, source] of [
-  ["skill", skill],
-  ["showcase", showcase],
+for (const [name, source, expectedVersion] of [
+  ["skill", skill, "latest"],
+  ["showcase", showcase, packageManifest.version],
 ]) {
   const cdnVersions = [
     ...source.matchAll(
@@ -78,8 +87,8 @@ for (const [name, source] of [
 
   assert.ok(cdnVersions.length > 0, `${name} must contain a ShowDoc CDN URL.`);
   assert.ok(
-    cdnVersions.every((version) => version === packageManifest.version),
-    `${name} CDN URLs must use ${packageManifest.version}.`,
+    cdnVersions.every((version) => version === expectedVersion),
+    `${name} CDN URLs must use ${expectedVersion}.`,
   );
 }
 assert.ok(!skill.includes("showdoc.css"), "The public skill must use the one-script setup.");

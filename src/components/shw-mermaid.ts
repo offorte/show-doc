@@ -30,10 +30,7 @@ let renderQueue = Promise.resolve();
 function usesDarkTheme(): boolean {
   const root = document.documentElement;
   const explicitTheme = [root.dataset.shwTheme, root.dataset.theme].find(Boolean);
-  return (
-    explicitTheme === "dark" ||
-    (explicitTheme !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches)
-  );
+  return explicitTheme === "dark";
 }
 
 function activeTheme(probe: HTMLElement): MermaidThemeVariables {
@@ -188,7 +185,6 @@ export class ShwMermaid extends LitElement {
   public label = "Diagram";
 
   readonly #content = new LightDomTextController(this);
-  readonly #media = window.matchMedia("(prefers-color-scheme: dark)");
   readonly #rootObserver = new MutationObserver(() => this.requestUpdate());
   #error = false;
   #renderKey = "";
@@ -197,14 +193,12 @@ export class ShwMermaid extends LitElement {
 
   public override connectedCallback(): void {
     super.connectedCallback();
-    this.#media.addEventListener("change", this.#handleThemeChange);
     this.#rootObserver.observe(document.documentElement, {
       attributeFilter: ["data-shw-theme", "data-theme"],
     });
   }
 
   public override disconnectedCallback(): void {
-    this.#media.removeEventListener("change", this.#handleThemeChange);
     this.#rootObserver.disconnect();
     super.disconnectedCallback();
   }
@@ -278,10 +272,6 @@ export class ShwMermaid extends LitElement {
       },
     );
   }
-
-  readonly #handleThemeChange = (): void => {
-    this.requestUpdate();
-  };
 }
 
 defineElement("shw-mermaid", ShwMermaid);

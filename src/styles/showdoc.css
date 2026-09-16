@@ -4,7 +4,7 @@
 @source inline("flex flex-wrap grid hidden block inline-flex items-start items-center justify-between grid-cols-1 grid-cols-2 grid-cols-3 gap-2 gap-4 gap-6 gap-8 p-2 p-4 p-6 p-8 text-sm text-base text-lg text-xl text-2xl font-medium font-semibold font-bold rounded-lg rounded-xl border shadow-sm md:grid-cols-2 md:grid-cols-3");
 
 :where(:root) {
-  color-scheme: light dark;
+  color-scheme: light;
   --shw-color-page: light-dark(#f3f5f8, #0f1218);
   --shw-color-surface: light-dark(#ffffff, #171b24);
   --shw-color-surface-muted: light-dark(#f8fafc, #1d2330);

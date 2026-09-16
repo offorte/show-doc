@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+header {
+  border-bottom: 1px solid var(--shw-color-border, #dde2ea);
+  padding-bottom: clamp(1.5rem, 4vw, 3rem);
+}
+
+.eyebrow {
+  align-items: center;
+  color: var(--shw-color-accent, #4f46e5);
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 750;
+  gap: 0.75rem;
+  letter-spacing: 0.12em;
+  margin: 0 0 1.25rem;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  background: currentcolor;
+  content: "";
+  flex: 0 0 2rem;
+  height: 2px;
+}
+
+.heading {
+  font-size: clamp(2.25rem, 7vw, 4.75rem);
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+  max-width: 16ch;
+}
+
+shw-markdown {
+  margin-top: 1.25rem;
+  --shw-reading-width: 62ch;
+}
