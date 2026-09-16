@@ -2,7 +2,7 @@
 name: show-doc
 description: Create compact, readable standalone HTML documents with Offorte ShowDoc components and Markdown when a human-facing artifact needs more visual structure than normal prose.
 metadata:
-  version: "0.0.3" # x-release-please-version
+  version: "0.0.4" # x-release-please-version
 ---
 
 # ShowDoc
