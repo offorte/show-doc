@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4](https://github.com/offorte/show-doc/compare/show-doc-v0.0.3...show-doc-v0.0.4) (2026-09-16)
+
+
+### Optimizations
+
+* added richer layout components ([#7](https://github.com/offorte/show-doc/issues/7)) ([588adb3](https://github.com/offorte/show-doc/commit/588adb331bd937369ad79b041e6df693c2187c28))
+
 ## [0.0.3](https://github.com/offorte/show-doc/compare/show-doc-v0.0.2...show-doc-v0.0.3) (2026-09-04)
 
 
