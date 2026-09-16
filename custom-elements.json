@@ -182,7 +182,7 @@
         },
         {
           "kind": "class",
-          "description": "Shows a syntax-highlighted code block with an optional filename.",
+          "description": "Shows code or a supplied unified diff, with optional source line numbers and notes.",
           "name": "ShwCode",
           "members": [
             {
@@ -204,8 +204,41 @@
                 "text": "string"
               },
               "default": "\"text\"",
-              "description": "Syntax language. Supported values are html, js, ts, and json.",
+              "description": "Syntax language: html, js, ts, json, or diff for a supplied unified diff.",
               "attribute": "language"
+            },
+            {
+              "kind": "field",
+              "name": "lineNumbers",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Show 1-based positions in the displayed source, including diff headers.",
+              "attribute": "line-numbers"
+            },
+            {
+              "kind": "field",
+              "name": "highlight",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Source lines to emphasize, for example 2,4-6.",
+              "attribute": "highlight"
+            },
+            {
+              "kind": "field",
+              "name": "annotations",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "JSON array of { start, end?, text } notes. Text is safe Markdown; lines are 1-based.",
+              "attribute": "annotations"
             }
           ],
           "attributes": [
@@ -224,8 +257,35 @@
                 "text": "string"
               },
               "default": "\"text\"",
-              "description": "Syntax language. Supported values are html, js, ts, and json.",
+              "description": "Syntax language: html, js, ts, json, or diff for a supplied unified diff.",
               "fieldName": "language"
+            },
+            {
+              "name": "line-numbers",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Show 1-based positions in the displayed source, including diff headers.",
+              "fieldName": "lineNumbers"
+            },
+            {
+              "name": "highlight",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Source lines to emphasize, for example 2,4-6.",
+              "fieldName": "highlight"
+            },
+            {
+              "name": "annotations",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "JSON array of { start, end?, text } notes. Text is safe Markdown; lines are 1-based.",
+              "fieldName": "annotations"
             }
           ],
           "superclass": {
@@ -237,8 +297,14 @@
         },
         {
           "kind": "class",
-          "description": "Hides optional Markdown details behind a native disclosure control.",
+          "description": "Hides optional Markdown or child document blocks behind a native disclosure control.",
           "name": "ShwCollapsible",
+          "slots": [
+            {
+              "description": "Document blocks when content=\"blocks\".",
+              "name": ""
+            }
+          ],
           "members": [
             {
               "kind": "field",
@@ -262,9 +328,29 @@
               "default": "\"Details\"",
               "description": "Label for the disclosure control.",
               "attribute": "summary"
+            },
+            {
+              "kind": "field",
+              "name": "content",
+              "privacy": "public",
+              "type": {
+                "text": "\"markdown\" | \"blocks\""
+              },
+              "default": "\"markdown\"",
+              "description": "Body input: Markdown text by default, or slotted document blocks.",
+              "attribute": "content"
             }
           ],
           "attributes": [
+            {
+              "name": "content",
+              "type": {
+                "text": "\"markdown\" | \"blocks\""
+              },
+              "default": "\"markdown\"",
+              "description": "Body input: Markdown text by default, or slotted document blocks.",
+              "fieldName": "content"
+            },
             {
               "name": "open",
               "type": {

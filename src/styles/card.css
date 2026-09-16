@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+article {
+  align-content: start;
+  background: linear-gradient(
+    145deg,
+    var(--shw-color-surface, #ffffff) 35%,
+    var(--shw-color-surface-muted, #f8fafc)
+  );
+  border: 1px solid var(--shw-color-border, #dde2ea);
+  border-radius: calc(var(--shw-radius, 1rem) * 0.85);
+  box-shadow: 0 0.2rem 0.75rem
+    color-mix(in srgb, var(--shw-color-shadow, rgb(15 23 42 / 10%)) 35%, transparent);
+  display: grid;
+  gap: 0.8rem;
+  height: 100%;
+  padding: clamp(1rem, 3vw, 1.35rem);
+}
+
+.heading {
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+shw-badge {
+  justify-self: start;
+}
+
+shw-markdown {
+  --shw-reading-width: none;
+}
+
+@media print {
+  article {
+    background: var(--shw-color-surface, #ffffff);
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}

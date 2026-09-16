@@ -1,0 +1,50 @@
+:host {
+  container: shw-section / inline-size;
+  display: block;
+  min-width: 0;
+}
+
+section,
+.section-header {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.section-header {
+  border-bottom: 1px solid var(--shw-color-border, #dde2ea);
+  gap: 0.6rem;
+  padding-bottom: 1rem;
+}
+
+.heading {
+  font-size: clamp(1.5rem, 3.5cqi, 2.15rem);
+  overflow-wrap: anywhere;
+}
+
+.intro {
+  color: var(--shw-color-muted, #667085);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 54ch;
+  text-wrap: pretty;
+}
+
+slot {
+  display: grid;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+@container shw-section (min-width: 44rem) {
+  .section-header[data-with-intro] {
+    align-items: end;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+}
+
+@media print {
+  .section-header {
+    break-after: avoid;
+  }
+}

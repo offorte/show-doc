@@ -18,6 +18,7 @@ export class ShwGrid extends LitElement {
     hostStyles,
     css`
       :host {
+        container: shw-grid / inline-size;
         display: block;
         min-width: 0;
       }
@@ -32,7 +33,7 @@ export class ShwGrid extends LitElement {
         min-width: 0;
       }
 
-      @media (min-width: 44rem) {
+      @container shw-grid (min-width: 38rem) {
         .columns-2 {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -46,7 +47,7 @@ export class ShwGrid extends LitElement {
         }
       }
 
-      @media (min-width: 68rem) {
+      @container shw-grid (min-width: 58rem) {
         .columns-4 {
           grid-template-columns: repeat(4, minmax(0, 1fr));
         }

@@ -1,13 +1,28 @@
-import { css, html, LitElement, nothing } from "lit";
+import { html, LitElement, nothing, unsafeCSS } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
+import { classifyDiffLines, parseCodeDetails } from "../internal/code-details";
 import { defineElement } from "../internal/define-element";
-import { highlightCode } from "../internal/highlight-code";
+import { highlightCode, highlightCodeLines } from "../internal/highlight-code";
 import { LightDomTextController } from "../internal/light-dom-text-controller";
+import codeStyles from "../styles/code.css?inline";
 import { hostStyles } from "../styles/component-styles";
+import "./shw-markdown";
+
+type CodeDetails = ReturnType<typeof parseCodeDetails>;
+
+function annotationMarkers(notes: CodeDetails["notes"]): Map<number, number[]> {
+  const markers = new Map<number, number[]>();
+  for (const [index, note] of notes.entries()) {
+    const lineMarkers = markers.get(note.start) ?? [];
+    lineMarkers.push(index + 1);
+    markers.set(note.start, lineMarkers);
+  }
+  return markers;
+}
 
 /**
- * Shows a syntax-highlighted code block with an optional filename.
+ * Shows code or a supplied unified diff, with optional source line numbers and notes.
  *
  * @element shw-code
  */
@@ -15,145 +30,111 @@ export class ShwCode extends LitElement {
   public static override properties = {
     filename: { type: String },
     language: { type: String },
+    lineNumbers: { type: Boolean, attribute: "line-numbers" },
+    highlight: { type: String },
+    annotations: { type: String },
   };
 
-  public static override styles = [
-    hostStyles,
-    css`
-      :host {
-        display: block;
-        min-width: 0;
-      }
-
-      figure {
-        background: var(--shw-color-code-background, #111827);
-        border: 1px solid var(--shw-color-code-border, rgb(255 255 255 / 12%));
-        border-radius: 0.8rem;
-        box-shadow: 0 0.75rem 2rem var(--shw-color-shadow, rgb(15 23 42 / 10%));
-        color: var(--shw-color-code-text, #e6eaf2);
-        margin: 0;
-        overflow: hidden;
-      }
-
-      figcaption {
-        align-items: center;
-        background: var(--shw-color-code-chrome, #1f2937);
-        border-bottom: 1px solid var(--shw-color-code-border, rgb(255 255 255 / 12%));
-        color: var(--shw-color-code-muted, #9ca3af);
-        display: flex;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.75rem;
-        justify-content: space-between;
-        line-height: 1.4;
-        padding: 0.65rem 1rem;
-      }
-
-      .language {
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-
-      pre {
-        margin: 0;
-        overflow-x: auto;
-        padding: 1rem 1.15rem;
-      }
-
-      code {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.84rem;
-        line-height: 1.7;
-        tab-size: 2;
-      }
-
-      .token.comment,
-      .token.prolog,
-      .token.doctype,
-      .token.cdata {
-        color: var(--shw-code-comment, #94a3b8);
-      }
-
-      .token.punctuation {
-        color: var(--shw-code-punctuation, #cbd5e1);
-      }
-
-      .token.property,
-      .token.tag,
-      .token.boolean,
-      .token.number,
-      .token.constant,
-      .token.symbol,
-      .token.deleted {
-        color: var(--shw-code-value, #fda4af);
-      }
-
-      .token.selector,
-      .token.attr-name,
-      .token.string,
-      .token.char,
-      .token.builtin,
-      .token.inserted {
-        color: var(--shw-code-string, #86efac);
-      }
-
-      .token.operator,
-      .token.entity,
-      .token.url,
-      .token.variable {
-        color: var(--shw-code-operator, #67e8f9);
-      }
-
-      .token.atrule,
-      .token.attr-value,
-      .token.function,
-      .token.class-name {
-        color: var(--shw-code-function, #fde68a);
-      }
-
-      .token.keyword {
-        color: var(--shw-code-keyword, #c4b5fd);
-      }
-
-      .token.regex,
-      .token.important {
-        color: var(--shw-code-important, #fdba74);
-      }
-
-      .token.important,
-      .token.bold {
-        font-weight: 700;
-      }
-
-      .token.italic {
-        font-style: italic;
-      }
-    `,
-  ];
+  public static override styles = [hostStyles, unsafeCSS(codeStyles)];
 
   /** Optional filename shown above the code. */
   public filename = "";
 
-  /** Syntax language. Supported values are html, js, ts, and json. */
+  /** Syntax language: html, js, ts, json, or diff for a supplied unified diff. */
   public language = "text";
+
+  /** Show 1-based positions in the displayed source, including diff headers. */
+  public lineNumbers = false;
+
+  /** Source lines to emphasize, for example 2,4-6. */
+  public highlight = "";
+
+  /** JSON array of { start, end?, text } notes. Text is safe Markdown; lines are 1-based. */
+  public annotations = "";
 
   readonly #content = new LightDomTextController(this);
 
   protected override render() {
-    const showCaption = this.filename !== "" || this.language !== "text";
+    const source = this.#content.source;
+    const showLines = this.#usesLines();
+    const lines = showLines
+      ? highlightCodeLines(source, this.language === "diff" ? "text" : this.language)
+      : [];
+    const details = parseCodeDetails(this.highlight, this.annotations, lines.length);
+    const sourceLines = this.lineNumbers || details.notes.length + details.ranges.length > 0;
 
-    return html`
-      <figure>
-        ${
-          showCaption
-            ? html`<figcaption>
-                <span>${this.filename}</span>
-                <span class="language">${this.language}</span>
-              </figcaption>`
-            : nothing
-        }
-        <pre><code>${unsafeHTML(highlightCode(this.#content.source, this.language))}</code></pre>
-      </figure>
-    `;
+    return html`<figure>
+      ${this.#renderCaption(showLines, sourceLines)}
+      ${this.#renderCode(source, showLines, lines, details)}
+      ${details.errors.map((error) => html`<p class="error" role="alert">${error}</p>`)}
+      ${this.#renderNotes(details.notes)}
+    </figure>`;
+  }
+
+  #usesLines(): boolean {
+    return (
+      this.lineNumbers ||
+      this.language === "diff" ||
+      this.highlight !== "" ||
+      this.annotations !== ""
+    );
+  }
+
+  #renderCaption(showLines: boolean, sourceLines: boolean) {
+    if (this.filename === "" && this.language === "text" && !showLines) {
+      return nothing;
+    }
+    return html`<figcaption>
+      <span>${this.filename}</span>
+      ${this.#renderLanguage(sourceLines)}
+    </figcaption>`;
+  }
+
+  #renderLanguage(sourceLines: boolean) {
+    return html`<span class="caption-meta"
+      >${sourceLines ? html`<span>Source lines</span>` : nothing}<span class="language"
+        >${this.language}</span
+      ></span
+    >`;
+  }
+
+  #renderCode(source: string, showLines: boolean, lines: string[], details: CodeDetails) {
+    if (!showLines) {
+      return html`<pre><code>${unsafeHTML(highlightCode(source, this.language))}</code></pre>`;
+    }
+    const kinds = this.language === "diff" ? classifyDiffLines(source.split("\n")) : [];
+    const markers = annotationMarkers(details.notes);
+    return html`<pre><code class=${this.lineNumbers ? "lines numbered" : "lines"} style=${`--code-number-width: ${Math.max(2, String(lines.length).length)}ch`}>${lines.map((line, index) => this.#renderLine(line, index + 1, details.ranges, kinds[index] ?? "", markers.get(index + 1) ?? [], index === lines.length - 1))}</code></pre>`;
+  }
+
+  #renderLine(
+    line: string,
+    number: number,
+    ranges: CodeDetails["ranges"],
+    kind: string,
+    markers: number[],
+    last: boolean,
+  ) {
+    const focused = ranges.some((range) => number >= range.start && number <= range.end);
+    return html`<span class=${`code-line ${kind}${focused ? " focused" : ""}`}
+        >${this.lineNumbers ? html`<span class="line-number" data-number=${number} aria-hidden="true"></span>` : nothing}<span
+          class="code-source"
+          >${unsafeHTML(line)}</span
+        ><span class="note-markers" aria-hidden="true"
+          >${markers.map((marker) => html`<span class="note-marker" data-number=${marker}></span>`)}</span
+        ></span
+      >${last ? nothing : "\n"}`;
+  }
+
+  #renderNotes(notes: CodeDetails["notes"]) {
+    if (notes.length === 0) {
+      return nothing;
+    }
+    return html`<div class="notes">
+      <ol aria-label="Code annotations">
+        ${notes.map((note) => html`<li><span class="note-lines">Source ${note.start === note.end ? `line ${note.start}` : `lines ${note.start}–${note.end}`}</span><shw-markdown>${note.text}</shw-markdown></li>`)}
+      </ol>
+    </div>`;
   }
 }
 

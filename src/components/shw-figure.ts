@@ -30,7 +30,7 @@ export class ShwFigure extends LitElement {
         align-items: center;
         background: var(--shw-color-surface-muted, #f8fafc);
         border: 1px solid var(--shw-color-border, #dde2ea);
-        border-radius: 0.8rem;
+        border-radius: calc(var(--shw-radius, 1rem) * 0.85);
         display: flex;
         justify-content: center;
         min-height: 4rem;
@@ -50,8 +50,16 @@ export class ShwFigure extends LitElement {
         color: var(--shw-color-muted, #667085);
         font-size: 0.84rem;
         line-height: 1.55;
-        margin-top: 0.65rem;
-        text-align: center;
+        margin-top: 0.75rem;
+        max-width: var(--shw-reading-width, 70ch);
+        padding-inline: 0.25rem;
+        text-wrap: pretty;
+      }
+
+      @media print {
+        figure {
+          break-inside: avoid;
+        }
       }
     `,
   ];

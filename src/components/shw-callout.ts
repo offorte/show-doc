@@ -51,7 +51,7 @@ export class ShwCallout extends LitElement {
         background: var(--shw-callout-background);
         border: 1px solid color-mix(in srgb, var(--shw-callout-accent) 24%, transparent);
         border-left: 0.3rem solid var(--shw-callout-accent);
-        border-radius: 0.75rem;
+        border-radius: calc(var(--shw-radius, 1rem) * 0.75);
         display: grid;
         gap: 0.45rem;
         padding: 1rem 1.15rem;

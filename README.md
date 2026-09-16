@@ -5,7 +5,7 @@
 ShowDoc is an agent skill for Codex, Claude Code, and other compatible coding agents. It replaces
 separate Markdown and HTML versions with one shared HTML artifact for agents and people.
 
-An agent writes compact Markdown and semantic `shw-*` elements. One versioned JavaScript include
+An agent writes compact Markdown and semantic `shw-*` elements. One JavaScript include
 provides the components, Markdown rendering, presentation DOM, and CSS.
 
 The source DOM stays small and focused on content. Agents can read and update it without sorting
@@ -50,6 +50,56 @@ Use ShowDoc for:
 ShowDoc is not intended for dashboards, forms, modals, or large interactive tools. Those need their
 own application code.
 
+## Plans and change recaps
+
+Build a plan from an outcome, a focused comparison or diagram, and steps with clear checks. Build
+a recap from the resulting behavior, a real change excerpt, and the checks that actually ran.
+Existing grids, sections, cards, figures, and tables supply the structure.
+
+For code, `shw-code` supports `language="diff"` for supplied unified patches, `line-numbers`,
+`highlight="2,4-6"`, and notes tied to lines:
+
+<!-- prettier-ignore -->
+```html
+<shw-code
+  filename="save.ts"
+  language="ts"
+  line-numbers
+  highlight="2"
+  annotations='[{"start":2,"text":"Clear the draft only after the save succeeds."}]'
+>
+  await save(draft);
+  clearDraft();
+</shw-code>
+```
+
+Annotations are a JSON array of `start`, optional `end`, and Markdown `text`. Line references are
+1-based positions in the displayed excerpt, including any diff headers. They are not file line
+numbers. Invalid JSON or ranges show an authoring message without hiding the source. Notes remain
+visible below the code. ShowDoc does not fetch source, compute changes, or verify claims.
+
+Use `shw-collapsible content="blocks"` for expandable evidence that contains other components:
+
+<!-- prettier-ignore -->
+```html
+<shw-collapsible summary="Supporting evidence" content="blocks">
+  <shw-code filename="save.ts" language="ts">await save(draft);</shw-code>
+  <shw-table caption="Checks">
+    Check | Result
+    Save retry | Not run
+  </shw-table>
+</shw-collapsible>
+```
+
+The default disclosure body remains Markdown. In blocks mode, wrap prose in `shw-markdown`.
+The [authoring skill](./skills/show-doc/SKILL.md) includes plan and recap recipes, comparison
+guidance, source escaping rules, and the full compact API.
+
+Documents default to light mode, regardless of the system theme. The theme uses a clear title,
+restrained accents, distinct metrics, and subtle surface contrast.
+Use visual variety to explain the content: short comparisons in a grid, wide evidence in a full
+section, and secondary detail in a disclosure. Keep uncertain results and open decisions explicit.
+
 ## Install the skill
 
 After you download or clone this repository, copy the complete [`skills/show-doc`](./skills/show-doc/)
@@ -77,9 +127,13 @@ Ask your agent for the document you need:
 
 > Use the ShowDoc skill to create a visual project update.
 
-The [`show-doc` skill](./skills/show-doc/SKILL.md) contains the full versioned runtime contract,
+The [`show-doc` skill](./skills/show-doc/SKILL.md) contains the runtime setup,
 component reference, and authoring rules. It creates the complete HTML file for you. You do not need
 to choose a CDN script or write setup code.
+
+The skill uses `@latest` CDN URLs by default, so generated documents can receive future published
+updates. Ask for an exact version when a document needs to keep the same runtime. The released
+showcase stays pinned to its matching package version.
 
 ## Safety
 

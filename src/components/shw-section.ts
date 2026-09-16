@@ -1,7 +1,8 @@
-import { css, html, LitElement, nothing } from "lit";
+import { html, LitElement, nothing, unsafeCSS } from "lit";
 
 import { defineElement } from "../internal/define-element";
 import { headingStyles, hostStyles } from "../styles/component-styles";
+import sectionStyles from "../styles/section.css?inline";
 
 /**
  * Groups related document blocks under a heading divider and optional short introduction.
@@ -16,54 +17,7 @@ export class ShwSection extends LitElement {
     level: { type: Number },
   };
 
-  public static override styles = [
-    hostStyles,
-    headingStyles,
-    css`
-      :host {
-        display: block;
-        min-width: 0;
-      }
-
-      section,
-      .section-header {
-        display: grid;
-        gap: 1.25rem;
-      }
-
-      .section-header {
-        border-bottom: 1px solid var(--shw-color-border, #dde2ea);
-        gap: 0.6rem;
-        padding-bottom: 0.75rem;
-      }
-
-      .heading {
-        font-size: clamp(1.5rem, 4vw, 2.15rem);
-      }
-
-      .intro {
-        color: var(--shw-color-muted, #667085);
-        line-height: 1.55;
-        margin: 0;
-        max-width: 54ch;
-        text-wrap: pretty;
-      }
-
-      slot {
-        display: grid;
-        gap: 1.25rem;
-        min-width: 0;
-      }
-
-      @media (min-width: 52rem) {
-        .section-header[data-with-intro] {
-          align-items: end;
-          gap: clamp(2rem, 5vw, 4rem);
-          grid-template-columns: minmax(12rem, 0.75fr) minmax(18rem, 1.25fr);
-        }
-      }
-    `,
-  ];
+  public static override styles = [hostStyles, headingStyles, unsafeCSS(sectionStyles)];
 
   /** Optional section heading. */
   public heading = "";
