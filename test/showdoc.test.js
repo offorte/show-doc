@@ -29,6 +29,26 @@ async function waitForMermaidSvg(element) {
   return element.shadowRoot.querySelector("svg");
 }
 
+async function waitForDiagram(element, nodes, edges) {
+  await waitUntil(
+    () =>
+      element.shadowRoot.querySelectorAll(".react-flow__node").length >= nodes &&
+      element.shadowRoot.querySelectorAll(".edge .line").length >= edges,
+    "The diagram did not render within 2.5 seconds.",
+    { timeout: 2_500 },
+  );
+}
+
+async function expectMermaidDrawing(source) {
+  await import("../dist/showdoc-mermaid.js");
+  const element = await fixture(html`<shw-mermaid label="Fallback"></shw-mermaid>`);
+  element.textContent = source;
+  await aTimeout(0);
+  await waitForMermaidSvg(element);
+  expect(element.shadowRoot.querySelector(".react-flow")).to.equal(null);
+  expect(element.shadowRoot.querySelector(".error")).to.equal(null);
+}
+
 describe("Offorte ShowDoc", () => {
   it("installs the global stylesheet from the JavaScript bundle", () => {
     const stylesheet = document.head.querySelector("style[data-shw-styles]");
@@ -227,38 +247,476 @@ describe("Offorte ShowDoc", () => {
     expect(figure.shadowRoot.querySelector("figcaption").textContent).to.equal("A simple flow");
   });
 
-  it("renders Mermaid from the larger bundle", async () => {
+  it("installs the global stylesheet from the Mermaid bundle", async () => {
+    document.head.querySelector("style[data-shw-styles]")?.remove();
+    await import(`../dist/showdoc-mermaid.js?styles=${Date.now()}`);
+
+    expect(document.head.querySelector("style[data-shw-styles]")).not.to.equal(null);
+  });
+
+  it("keeps Mermaid's drawing for diagrams that ShowDoc does not draw", async () => {
     await import("../dist/showdoc-mermaid.js");
     const wrapper = await fixture(html`
       <div style="width: 800px">
         <shw-mermaid
-          label="Release flow"
+          label="Order classes"
           style="
-            --shw-color-accent: #0f766e;
             --shw-color-accent-soft: #ccfbf1;
-            --shw-color-heading: #134e4a;
+            --shw-color-border: #0f766e;
             --shw-font-sans: 'Courier New';
           "
         ></shw-mermaid>
       </div>
     `);
     const element = wrapper.querySelector("shw-mermaid");
-    element.textContent = "flowchart LR\nA[Write] --> B[Render] --> C[Read]";
+    element.textContent = "classDiagram\nclass Order\nOrder <|-- Refund";
     await aTimeout(0);
     const svg = await waitForMermaidSvg(element);
-    const node = svg.querySelector(".node rect");
-    const nodeLabel = svg.querySelector(".node text");
+    const node = svg.querySelector(".node path, .node rect");
+    const nodeLabel = svg.querySelector(".node text, .node .nodeLabel");
 
-    expect(svg).not.to.equal(null);
     expect(element.shadowRoot.querySelector('[role="img"]').getAttribute("aria-label")).to.equal(
-      "Release flow",
+      "Order classes",
     );
-    expect(svg.textContent).to.include("Write");
+    expect(svg.textContent).to.include("Order");
     expect(getComputedStyle(node).fill).to.equal("rgb(204, 251, 241)");
     expect(getComputedStyle(node).stroke).to.equal("rgb(15, 118, 110)");
     expect(getComputedStyle(nodeLabel).fontFamily).to.include("Courier New");
     expect(element.getBoundingClientRect().width).to.equal(wrapper.getBoundingClientRect().width);
     expect(svg.getBoundingClientRect().width).to.be.lessThan(element.getBoundingClientRect().width);
+  });
+
+  it("draws a flowchart with cards, routed lines, and the document theme", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const wrapper = await fixture(html`
+      <div style="width: 800px">
+        <shw-mermaid
+          label="Release flow"
+          style="
+            --shw-color-border: rgb(15, 118, 110);
+            --shw-color-heading: rgb(19, 78, 74);
+            --shw-color-surface: rgb(204, 251, 241);
+            --shw-font-sans: 'Courier New';
+          "
+        ></shw-mermaid>
+      </div>
+    `);
+    const element = wrapper.querySelector("shw-mermaid");
+    element.textContent = "flowchart LR\nA[Write] -->|text| B{Ready?}\nB -->|yes| C([Read])";
+    await aTimeout(0);
+    await waitForDiagram(element, 3, 2);
+    const root = element.shadowRoot;
+    const title = root.querySelector(".texts strong");
+
+    expect(root.querySelector('[role="img"]').getAttribute("aria-label")).to.equal("Release flow");
+    expect(root.querySelector(".shape-decision")).not.to.equal(null);
+    expect(root.querySelector(".shape-terminal")).not.to.equal(null);
+    expect([...root.querySelectorAll(".edge-pill")].map((pill) => pill.textContent)).to.deep.equal([
+      "text",
+      "yes",
+    ]);
+    expect(title.textContent).to.equal("Write");
+    const card = root.querySelector(".shape-card");
+    expect(getComputedStyle(card).backgroundColor).to.equal("rgb(204, 251, 241)");
+    expect(getComputedStyle(card).borderTopColor).to.equal("rgb(15, 118, 110)");
+    expect(getComputedStyle(title).color).to.equal("rgb(19, 78, 74)");
+    expect(getComputedStyle(title).fontFamily).to.include("Courier New");
+    expect(element.getBoundingClientRect().width).to.equal(wrapper.getBoundingClientRect().width);
+  });
+
+  it("draws subgraphs as lanes and shows change status", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Signup"></shw-mermaid>`);
+    element.textContent = [
+      "flowchart LR",
+      "subgraph API",
+      "  A[POST /signup]:::changed",
+      "end",
+      "subgraph Data",
+      "  B[(Users)]:::new",
+      "  C[Old store]:::removed",
+      "end",
+      "A ==>|write user| B",
+      "A -.-> C",
+    ].join("\n");
+    await aTimeout(0);
+    await waitForDiagram(element, 5, 2);
+    const root = element.shadowRoot;
+    const [firstLane, secondLane] = root.querySelectorAll(".lane-box");
+
+    expect([...root.querySelectorAll(".lane-title")].map((lane) => lane.textContent)).to.deep.equal(
+      ["API", "Data"],
+    );
+    expect(firstLane.getBoundingClientRect().right).to.be.lessThan(
+      secondLane.getBoundingClientRect().left,
+    );
+    expect([...root.querySelectorAll(".pill")].map((pill) => pill.textContent)).to.have.members([
+      "CHANGED",
+      "NEW",
+      "REMOVED",
+    ]);
+    expect(root.querySelector(".edge-pill.s-new").textContent).to.equal("write user");
+    expect(root.querySelector(".edge.thick.s-new")).not.to.equal(null);
+    expect(root.querySelector(".edge.dashed.s-removed")).not.to.equal(null);
+  });
+
+  it("does not route lines through cards in a lane diagram", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Route check"></shw-mermaid>`);
+    element.textContent = [
+      "flowchart LR",
+      "subgraph One",
+      "  A[First] --> B[Second]",
+      "  B --> C[Third]",
+      "  A --> C",
+      "end",
+    ].join("\n");
+    await aTimeout(0);
+    await waitForDiagram(element, 4, 3);
+    const root = element.shadowRoot;
+    const middle = root.querySelector('[data-id="B"]').getBoundingClientRect();
+    const crossing = [...root.querySelectorAll(".edge .line")].some((line) => {
+      const length = line.getTotalLength();
+      const matrix = line.getScreenCTM();
+      for (let distance = 0; distance <= length; distance += 4) {
+        const point = line.getPointAtLength(distance).matrixTransform(matrix);
+        if (
+          point.x > middle.left &&
+          point.x < middle.right &&
+          point.y > middle.top &&
+          point.y < middle.bottom
+        ) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    expect(crossing).to.equal(false);
+  });
+
+  it("draws state diagrams and sequence diagrams", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const states = await fixture(html`<shw-mermaid label="States"></shw-mermaid>`);
+    states.textContent = "stateDiagram-v2\n[*] --> Draft\nDraft --> Paid: pay\nPaid --> [*]";
+    await aTimeout(0);
+    await waitForDiagram(states, 4, 3);
+    expect(states.shadowRoot.querySelector(".shape-start")).not.to.equal(null);
+    expect(states.shadowRoot.querySelector(".shape-end")).not.to.equal(null);
+    expect(states.shadowRoot.querySelector(".edge-pill").textContent).to.equal("pay");
+
+    const sequence = await fixture(html`<shw-mermaid label="Login"></shw-mermaid>`);
+    sequence.textContent = [
+      "sequenceDiagram",
+      "actor U as User",
+      "participant A as API",
+      "U->>+A: Log in",
+      "A-->>-U: Token",
+      "loop Every minute",
+      "  U->>A: Refresh",
+      "end",
+    ].join("\n");
+    await aTimeout(0);
+    await waitUntil(() => sequence.shadowRoot.querySelector(".sequence"), "No sequence drawing.", {
+      timeout: 2_500,
+    });
+    const text = sequence.shadowRoot.querySelector(".sequence").textContent;
+    expect(text).to.include("User");
+    expect(text).to.include("Log in");
+    expect(text).to.include("LOOP");
+    expect(sequence.shadowRoot.querySelectorAll(".activation").length).to.equal(1);
+  });
+
+  it("fills the window in page mode without a document", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid page label="Alone"></shw-mermaid>`);
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const box = element.getBoundingClientRect();
+
+    expect(box.width).to.equal(innerWidth);
+    expect(box.height).to.equal(innerHeight);
+    expect(element.shadowRoot.querySelector(".frame").getBoundingClientRect().height).to.equal(
+      innerHeight,
+    );
+  });
+
+  it("follows the document theme without drawing again", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Theme"></shw-mermaid>`);
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const card = element.shadowRoot.querySelector(".shape-card");
+    const light = getComputedStyle(card).backgroundColor;
+
+    document.documentElement.dataset.shwTheme = "dark";
+    await aTimeout(0);
+    const dark = getComputedStyle(card).backgroundColor;
+    delete document.documentElement.dataset.shwTheme;
+
+    expect(card.isConnected).to.equal(true);
+    expect(dark).to.not.equal(light);
+  });
+
+  it("shows a frontmatter title with grey code and keeps author colors", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Title"></shw-mermaid>`);
+    element.textContent = [
+      "---",
+      "title: Container view | overview",
+      "---",
+      "flowchart LR",
+      "A[One] --> B[Two]",
+      "style A fill:#fde68a,stroke:#b45309,color:#78350f",
+      "linkStyle 0 stroke:#b45309",
+    ].join("\n");
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const root = element.shadowRoot;
+    const chip = root.querySelector(".view-chip");
+    const card = root.querySelector('[data-id="A"] .shape-card');
+
+    expect(chip.firstChild.textContent).to.equal("Container view");
+    expect(chip.querySelector("code").textContent).to.equal("overview");
+    expect(getComputedStyle(card).backgroundColor).to.equal("rgb(253, 230, 138)");
+    expect(getComputedStyle(root.querySelector(".edge .line")).stroke).to.equal("rgb(180, 83, 9)");
+  });
+
+  it("leaves state diagram links to Mermaid", async () => {
+    await expectMermaidDrawing('stateDiagram-v2\nA --> B\nclick A href "https://example.com"');
+  });
+
+  it("leaves half arrows in a sequence diagram to Mermaid", async () => {
+    await expectMermaidDrawing("sequenceDiagram\nA-|\\B: Half arrow");
+  });
+
+  it("leaves central connection marks in a sequence diagram to Mermaid", async () => {
+    await expectMermaidDrawing("sequenceDiagram\nA->>()B: Central");
+  });
+
+  it("expands a drawn diagram over the full window and closes again", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Expandable"></shw-mermaid>`);
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const root = element.shadowRoot;
+
+    root.querySelector('[aria-label="Expand diagram"]').click();
+    await waitUntil(
+      () => root.querySelectorAll(".overlay-canvas .react-flow__node").length === 2,
+      "The overlay did not draw the diagram.",
+      { timeout: 2_500 },
+    );
+    const dialog = root.querySelector(".overlay");
+    const box = dialog.getBoundingClientRect();
+
+    expect(dialog.open).to.equal(true);
+    expect(box.width).to.equal(innerWidth);
+    expect(box.height).to.equal(innerHeight);
+    expect(root.querySelector('.overlay [aria-label="Zoom in"]')).not.to.equal(null);
+    expect(root.querySelector('.overlay [aria-label="Expand diagram"]')).to.equal(null);
+
+    root.querySelector('[aria-label="Close diagram"]').click();
+    await element.updateComplete;
+
+    expect(dialog.open).to.equal(false);
+    expect(root.querySelector(".overlay-canvas")).to.equal(null);
+    expect(root.querySelectorAll(".canvas .react-flow__node").length).to.equal(2);
+  });
+
+  it("keeps the inline zoom when the overlay hides a classic scrollbar", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const scrollbar = document.createElement("style");
+    scrollbar.textContent = "::-webkit-scrollbar { width: 15px; }";
+    document.head.append(scrollbar);
+    const wrapper = await fixture(html`
+      <div style="height: 300vh"><shw-mermaid label="Zoomed"></shw-mermaid></div>
+    `);
+    const element = wrapper.querySelector("shw-mermaid");
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const root = element.shadowRoot;
+    const viewport = root.querySelector(".canvas .react-flow__viewport");
+    root.querySelector('[aria-label="Zoom out"]').click();
+    await waitUntil(() => viewport.style.transform.includes("scale(0."), "No zoom.", {
+      timeout: 2_500,
+    });
+    const zoomed = viewport.style.transform;
+    const width = root.querySelector(".frame").getBoundingClientRect().width;
+
+    root.querySelector('[aria-label="Expand diagram"]').click();
+    await waitUntil(() => root.querySelector(".overlay-canvas .react-flow__node"), "No overlay.", {
+      timeout: 2_500,
+    });
+    const openWidth = root.querySelector(".frame").getBoundingClientRect().width;
+    root.querySelector('[aria-label="Close diagram"]').click();
+    await element.updateComplete;
+    await aTimeout(100);
+    scrollbar.remove();
+
+    expect(openWidth).to.equal(width);
+    expect(viewport.style.transform).to.equal(zoomed);
+  });
+
+  it("returns the page to its scroll position after the overlay closes", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const wrapper = await fixture(html`
+      <div style="height: 300vh"><shw-mermaid label="Scrolled"></shw-mermaid></div>
+    `);
+    const element = wrapper.querySelector("shw-mermaid");
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const root = element.shadowRoot;
+    scrollTo(0, 120);
+
+    root.querySelector('[aria-label="Expand diagram"]').click();
+    await waitUntil(() => root.querySelector(".overlay").open, "No overlay.", { timeout: 2_500 });
+    scrollTo(0, 500);
+    root.querySelector('[aria-label="Close diagram"]').click();
+    await element.updateComplete;
+    const position = scrollY;
+    scrollTo(0, 0);
+
+    expect(position).to.equal(120);
+  });
+
+  it("expands a Mermaid drawing and closes when the dialog closes by itself", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Classes"></shw-mermaid>`);
+    element.textContent = "classDiagram\nclass Order";
+    await aTimeout(0);
+    await waitForMermaidSvg(element);
+    const root = element.shadowRoot;
+
+    root.querySelector('[aria-label="Expand diagram"]').click();
+    await waitUntil(() => root.querySelector(".overlay .diagram svg"), "No overlay drawing.", {
+      timeout: 2_500,
+    });
+    const dialog = root.querySelector(".overlay");
+    const drawing = root.querySelector(".overlay .diagram svg").getBoundingClientRect();
+
+    expect(drawing.width).to.be.greaterThan(innerWidth * 0.8);
+
+    dialog.close();
+    await waitUntil(() => root.querySelector(".overlay .diagram") === null, "Overlay stayed.", {
+      timeout: 2_500,
+    });
+  });
+
+  it("closes the overlay when the source changes", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Changing"></shw-mermaid>`);
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const root = element.shadowRoot;
+    root.querySelector('[aria-label="Expand diagram"]').click();
+    await waitUntil(() => root.querySelector(".overlay-canvas"), "No overlay.", { timeout: 2_500 });
+
+    element.textContent = "flowchart LR\nC --> D";
+    await waitUntil(() => !root.querySelector(".overlay").open, "Overlay stayed open.", {
+      timeout: 2_500,
+    });
+    await waitUntil(
+      () => [...root.querySelectorAll(".texts strong")].some((title) => title.textContent === "D"),
+      "The new source did not draw.",
+      { timeout: 2_500 },
+    );
+  });
+
+  it("switches the theme from page mode", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid page label="Alone"></shw-mermaid>`);
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+    const root = element.shadowRoot;
+    const card = root.querySelector(".shape-card");
+    const light = getComputedStyle(card).backgroundColor;
+
+    root.querySelector('[aria-label="Switch light and dark"]').click();
+    const dark = getComputedStyle(card).backgroundColor;
+    const darkTheme = document.documentElement.dataset.shwTheme;
+    root.querySelector('[aria-label="Switch light and dark"]').click();
+    const lightTheme = document.documentElement.dataset.shwTheme;
+    delete document.documentElement.dataset.shwTheme;
+
+    expect(dark).to.not.equal(light);
+    expect(darkTheme).to.equal("dark");
+    expect(lightTheme).to.equal("light");
+  });
+
+  it("keeps the overlay open when its theme button redraws a Mermaid drawing", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Classes"></shw-mermaid>`);
+    element.textContent = "classDiagram\nclass Order";
+    await aTimeout(0);
+    await waitForMermaidSvg(element);
+    const root = element.shadowRoot;
+    root.querySelector('[aria-label="Expand diagram"]').click();
+    await waitUntil(
+      () => root.querySelector(".overlay .diagram .node path, .overlay .diagram .node rect"),
+      "No overlay drawing.",
+      {
+        timeout: 2_500,
+      },
+    );
+    const overlayFill = () => {
+      const node = root.querySelector(".overlay .diagram .node path, .overlay .diagram .node rect");
+      return node === null ? "" : getComputedStyle(node).fill;
+    };
+    const lightFill = overlayFill();
+
+    root.querySelector('.overlay [aria-label="Switch light and dark"]').click();
+    await waitUntil(
+      () => overlayFill() !== "" && overlayFill() !== lightFill,
+      "The overlay did not draw the new theme colors.",
+      { timeout: 2_500 },
+    );
+    const stayedOpen = root.querySelector(".overlay").open;
+    delete document.documentElement.dataset.shwTheme;
+    root.querySelector('[aria-label="Close diagram"]').click();
+
+    expect(stayedOpen).to.equal(true);
+  });
+
+  it("has no expand button in page mode", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid page label="Alone"></shw-mermaid>`);
+    element.textContent = "flowchart LR\nA --> B";
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+
+    expect(element.shadowRoot.querySelector('[aria-label="Expand diagram"]')).to.equal(null);
+    expect(element.shadowRoot.querySelector(".overlay")).to.equal(null);
+  });
+
+  it("shows a message for invalid source", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Broken"></shw-mermaid>`);
+    element.textContent = "flowchart LR\nA[oops -->";
+    await aTimeout(0);
+    await waitUntil(() => element.shadowRoot.querySelector(".error"), "No error message.", {
+      timeout: 2_500,
+    });
+    expect(element.shadowRoot.querySelector(".react-flow")).to.equal(null);
+  });
+
+  it("draws labels as text so markup in a label cannot run", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Unsafe label"></shw-mermaid>`);
+    element.textContent = 'flowchart LR\nA["<img src=x onerror=alert(1)>Safe"] --> B[Next]';
+    await aTimeout(0);
+    await waitForDiagram(element, 2, 1);
+
+    expect(element.shadowRoot.querySelector("img, script, iframe, object, embed")).to.equal(null);
+    expect(element.shadowRoot.querySelector("[onerror]")).to.equal(null);
+    expect(element.shadowRoot.querySelector(".texts strong").textContent).to.equal("Safe");
   });
 
   it("removes executable content from Mermaid output", async () => {

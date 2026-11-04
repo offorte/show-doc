@@ -7,6 +7,7 @@ turn compact Markdown and semantic `shw-*` elements into readable HTML documents
 
 - `src/components/` owns the public `shw-*` elements.
 - `src/internal/` owns private parsing and registration helpers.
+- `src/internal/diagram/` owns the diagram drawing in the Mermaid bundle.
 - `src/styles/` owns generated global CSS and Shadow DOM typography CSS.
 - `skills/show-doc/SKILL.md` owns the agent-facing authoring API.
 - `demo/index.html` is the human-facing design example.
@@ -19,9 +20,11 @@ turn compact Markdown and semantic `shw-*` elements into readable HTML documents
 - Keep the public API small. Reuse an existing component before adding one.
 - Keep Lit Shadow DOM enabled. Expose theme changes through `--shw-*` variables.
 - Keep raw HTML and dangerous URL protocols disabled in Micromark.
-- Do not add a framework or runtime network request.
+- Do not add a runtime network request.
+- Do not add a framework to `showdoc.js`.
 - Do not add lazy loading. Each release runtime is one self-contained JS file with optional CSS.
-- Keep Mermaid in `showdoc-mermaid.js`. Do not add Mermaid to the core `showdoc.js` bundle.
+- Keep Mermaid, React, React Flow, and ELK in `showdoc-mermaid.js`. Do not add them to the core
+  `showdoc.js` bundle.
 - Use exact dependency versions.
 - Use `opt:` for a non-breaking optimization. It triggers a patch release, like `fix:`.
 - Format only with Oxfmt. Lint with Oxlint.
@@ -41,7 +44,7 @@ When an element, attribute, theme variable, or source grammar changes, update th
 Run the narrowest relevant command while working. Run the full gate before handoff:
 
 ```sh
-pnpm agent:verify
+pnpm agent:check
 ```
 
 Do not weaken a check to make it pass. Fix the source or the documented contract.

@@ -8,6 +8,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [tailwindcss()],
+    // React reads this name at runtime. A library build does not set it by itself.
+    define: includesMermaid ? { "process.env.NODE_ENV": JSON.stringify("production") } : {},
     build: {
       lib: {
         entry: fileURLToPath(

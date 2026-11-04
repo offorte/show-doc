@@ -64,7 +64,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Verify release
-        run: pnpm agent:verify
+        run: pnpm agent:check
 
       - name: Publish public package
         run: npm publish --access public
