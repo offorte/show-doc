@@ -1067,6 +1067,18 @@
               "default": "\"Diagram\"",
               "description": "Accessible name for the rendered diagram.",
               "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "page",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Fills the browser window with this one diagram. Use it without `shw-doc`.",
+              "attribute": "page",
+              "reflects": true
             }
           ],
           "attributes": [
@@ -1078,6 +1090,15 @@
               "default": "\"Diagram\"",
               "description": "Accessible name for the rendered diagram.",
               "fieldName": "label"
+            },
+            {
+              "name": "page",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Fills the browser window with this one diagram. Use it without `shw-doc`.",
+              "fieldName": "page"
             }
           ],
           "superclass": {

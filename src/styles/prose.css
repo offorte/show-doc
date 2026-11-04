@@ -2,3 +2,4 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 @plugin "@tailwindcss/typography";
 @source inline("prose prose-slate max-w-none");
+@source not "../internal/diagram";

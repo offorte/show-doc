@@ -1,13 +1,13 @@
 ---
 name: show-doc
-description: Create compact, readable standalone HTML documents with Offorte ShowDoc components and Markdown when a human-facing artifact needs more visual structure than normal prose.
+description: Create compact, readable standalone HTML documents with Offorte ShowDoc components and Markdown when a human-facing artifact needs more visual structure than normal prose, or one full-page Mermaid diagram when the user asks for a Mermaid diagram.
 metadata:
   version: "0.0.4" # x-release-please-version
 ---
 
 # ShowDoc
 
-Use ShowDoc when the user asks for a ShowDoc or HTML document. Otherwise, use it for reports, plans,
+Use ShowDoc when the user asks for a ShowDoc, an HTML document, or a Mermaid diagram. Otherwise, use it for reports, plans,
 reviews, decisions, and explanations that need a durable file or more visual structure than normal
 chat Markdown. Do not use it for dashboards, forms, or application-like tools.
 
@@ -79,7 +79,7 @@ available. Return the exact file path.
 | `shw-summary`     | `heading?`                                                              | The answer before the evidence.                  |
 | `shw-section`     | `heading?`, `intro?`, `level?`                                          | A topic with an automatic divider.               |
 | `shw-markdown`    | -                                                                       | Normal prose, lists, links, tasks, and headings. |
-| `shw-mermaid`     | `label?`                                                                | A diagram from Mermaid source.                   |
+| `shw-mermaid`     | `label?`, `page?`                                                       | A diagram from Mermaid source.                   |
 | `shw-grid`        | `columns?`                                                              | Two to four sibling blocks to compare.           |
 | `shw-card`        | `heading?`, `label?`, `tone?`                                           | One grouped idea, choice, or status.             |
 | `shw-badge`       | `tone?`                                                                 | A short standalone state or category.            |
@@ -217,5 +217,54 @@ Raw HTML inside Markdown is disabled. Write `&lt;` for a literal `<`, including 
 
 Write Mermaid diagram text directly inside `shw-mermaid`. Set `label` to its short accessible name.
 The Mermaid bundle supports the full Mermaid package and makes no extra runtime request.
+
+## Mermaid diagrams
+
+ShowDoc draws flowcharts, state diagrams, and sequence diagrams itself. Mermaid draws every other
+diagram type, and any diagram with `click` links, icons, images, or half arrows.
+
+The page is HTML, so write `&lt;` for each `<` in the source. For example, write
+`state check &lt;&lt;choice&gt;&gt;`. Write a second line in a label as `\n`, not `<br/>`. The second
+line appears as small code text.
+
+- A `subgraph` in a flowchart becomes a lane, a column with an uppercase title. Name each lane after
+  what its parts do. A nested subgraph, a line from a node to itself, or a line to a subgraph gives a
+  normal group layout instead of lanes.
+- `:::new`, `:::changed`, and `:::removed` add a status pill. Use them only when the diagram compares
+  two states.
+- `:::icon-code`, `window`, `box`, `play`, `queue`, `service`, `db`, `file`, `user`, `cloud`, or
+  `decision` (each with the `icon-` prefix) adds an icon. `[( )]` adds the database icon. In a lane,
+  every card has an icon.
+- A frontmatter title appears in a chip above the diagram. Text after `|` appears as grey code:
+  `title: Container view | architecture-overview · hero`.
+
+## Only a diagram
+
+When the user asks only for a Mermaid diagram, do not build a document. Write this page with one
+`shw-mermaid` that has the `page` attribute and no `shw-doc`.
+
+<!-- prettier-ignore -->
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@offorte/show-doc@latest/dist/showdoc-mermaid.js"
+    ></script>
+    <title>Save flow</title>
+  </head>
+  <body>
+    <shw-mermaid page label="Saving a draft">
+      flowchart LR
+        A[Save draft] --> B{Save succeeds?}
+        B -->|Yes| C[Clear draft]
+        B -->|No| D[Keep draft]
+    </shw-mermaid>
+  </body>
+</html>
+```
 
 Do not run a generic HTML formatter over the result. It can remove meaningful Markdown line breaks.

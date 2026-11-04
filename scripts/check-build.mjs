@@ -82,16 +82,30 @@ assert.ok(
   javascript.includes("data-shw-styles") && javascript.includes("--shw-color-page"),
   "The JS bundle must install the global ShowDoc stylesheet.",
 );
+assert.ok(
+  mermaidJavascript.includes("data-shw-styles") && mermaidJavascript.includes("--shw-color-page"),
+  "The Mermaid JS bundle must install the global ShowDoc stylesheet.",
+);
+for (const frameworkMarker of ["react-flow__node", "react.element"]) {
+  assert.ok(
+    !javascript.includes(frameworkMarker),
+    "The core JS bundle must not include React or React Flow.",
+  );
+}
 for (const dependency of [
+  "@xyflow/react - 12.12.0",
+  "elkjs - 0.12.1",
   "lit - 3.3.3",
   "mermaid - 11.17.2",
   "micromark - 4.0.2",
   "prismjs - 1.30.0",
+  "react - 19.3.1",
+  "react-dom - 19.3.1",
 ]) {
   assert.ok(licenses.includes(dependency), `The licenses file must include ${dependency}.`);
 }
 assert.ok(javascriptStats.size < 185_000, "The minified core JS bundle must stay below 185 KB.");
-assert.ok(mermaidStats.size < 5_500_000, "The minified Mermaid JS bundle must stay below 5.5 MB.");
+assert.ok(mermaidStats.size < 7_700_000, "The minified Mermaid JS bundle must stay below 7.7 MB.");
 await stat("dist/types/index.d.ts");
 await stat("dist/types/mermaid.d.ts");
 

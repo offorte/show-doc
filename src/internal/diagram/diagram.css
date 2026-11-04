@@ -1,0 +1,670 @@
+:host {
+  --d-canvas: var(--shw-color-page);
+  --d-dots: light-dark(#d5d9e0, #232a33);
+  --d-lane: light-dark(
+    color-mix(in srgb, var(--shw-color-surface) 62%, transparent),
+    var(--shw-color-surface)
+  );
+  --d-lane-ink: var(--shw-color-muted);
+  --d-card: light-dark(var(--shw-color-surface), var(--shw-color-surface-muted));
+  --d-card-line: var(--shw-color-border);
+  --d-chip: var(--shw-color-inline-code);
+  --d-icon: var(--shw-color-muted);
+  --d-ink: var(--shw-color-heading, #101827);
+  --d-muted: var(--shw-color-muted, #667085);
+  --d-soft: color-mix(in srgb, var(--shw-color-border) 80%, var(--shw-color-surface));
+  --d-line: light-dark(#a9adb5, #6e7681);
+  --d-label: light-dark(var(--shw-color-surface), var(--shw-color-page));
+  --d-label-line: var(--shw-color-border);
+  --d-label-ink: light-dark(#5c5a4f, #b1bac4);
+  --d-new: light-dark(#2f9e5a, #3fb950);
+  --d-new-card: light-dark(#f4fbf6, #18251d);
+  --d-new-line: light-dark(#a9d8b5, #2f6d3f);
+  --d-new-pill: light-dark(#b7e6c3, #12331f);
+  --d-new-pill-ink: light-dark(#1d6b3a, #3fb950);
+  --d-new-pill-line: light-dark(#93d3a4, #2f6d3f);
+  --d-new-label: light-dark(#5c5a4f, #3fb950);
+  --d-changed: light-dark(#c4951f, #d29922);
+  --d-changed-card: light-dark(#ffffff, #1f1d17);
+  --d-changed-line: light-dark(#e8cf9a, #7d5f1e);
+  --d-changed-pill: light-dark(#f4dc8c, #3b2e10);
+  --d-changed-pill-ink: light-dark(#6b5210, #e3b341);
+  --d-changed-pill-line: light-dark(#e3c564, #7d5f1e);
+  --d-changed-label: light-dark(#5c5a4f, #e3b341);
+  --d-removed: light-dark(#d9534f, #f85149);
+  --d-removed-card: light-dark(#fdf6f5, #1c1a1c);
+  --d-removed-line: light-dark(#e3a09a, #6e2b2b);
+  --d-removed-pill: light-dark(#f7c9c5, #3a1614);
+  --d-removed-pill-ink: light-dark(#9b2c23, #f85149);
+  --d-removed-pill-line: light-dark(#e3a09a, #6e2b2b);
+  --d-removed-label: light-dark(#5c5a4f, #f85149);
+  --d-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.diagram-head {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.view-chip {
+  background: var(--d-soft);
+  border-radius: 7px;
+  color: var(--d-ink);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 5px 10px;
+}
+
+.view-chip code {
+  color: var(--d-muted);
+  font: 12.5px var(--d-mono);
+  margin-left: 8px;
+}
+
+.stat {
+  align-items: center;
+  background: var(--d-soft);
+  border-radius: 6px;
+  color: var(--d-ink);
+  display: inline-flex;
+  font: 12px var(--d-mono);
+  gap: 6px;
+  padding: 2px 8px;
+}
+
+.dot {
+  border-radius: 50%;
+  height: 9px;
+  width: 9px;
+}
+
+.dot.s-new {
+  background: var(--d-new);
+}
+
+.dot.s-changed {
+  background: var(--d-changed);
+}
+
+.dot.s-removed {
+  background: var(--d-removed);
+}
+
+.frame {
+  background: var(--d-canvas);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.flow {
+  height: 100%;
+  width: 100%;
+}
+
+.react-flow {
+  --xy-background-color: transparent;
+  --xy-background-color-default: transparent;
+  --xy-background-pattern-dots-color-default: var(--d-dots);
+  --xy-attribution-background-color: transparent;
+  --xy-attribution-background-color-default: transparent;
+}
+
+.react-flow__pane {
+  cursor: grab;
+}
+
+@media (pointer: coarse) {
+  :host(:not([page])) .canvas:not(.overlay-canvas) .react-flow__pane,
+  :host(:not([page])) .canvas:not(.overlay-canvas) .react-flow__renderer {
+    touch-action: pan-y;
+  }
+}
+
+.react-flow__pane.dragging {
+  cursor: grabbing;
+}
+
+.react-flow__attribution a {
+  color: var(--d-muted);
+  font-size: 9px;
+}
+
+.react-flow__node {
+  border: 0;
+  padding: 0;
+}
+
+.hidden-handle {
+  border: 0;
+  height: 1px;
+  min-height: 0;
+  min-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+}
+
+.tools {
+  display: flex;
+  gap: 4px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 5;
+}
+
+.tools button,
+.overlay-close,
+.theme-toggle {
+  background: var(--d-card);
+  border: 1px solid var(--d-card-line);
+  border-radius: 7px;
+  color: var(--d-ink);
+  cursor: pointer;
+  font:
+    500 12.5px var(--shw-font-sans, Inter),
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+  height: 26px;
+  min-width: 26px;
+  padding: 0 7px;
+}
+
+.tools button:focus-visible,
+.overlay-close:focus-visible,
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--shw-color-accent, #4f46e5);
+  outline-offset: 1px;
+}
+
+.lane-box,
+.group-box {
+  height: 100%;
+  width: 100%;
+}
+
+.lane-box {
+  background: var(--d-lane);
+  border-radius: 12px;
+}
+
+.group-box {
+  background: var(--d-lane);
+  border: 1px solid var(--d-card-line);
+  border-radius: 12px;
+}
+
+.lane-title,
+.lane-label {
+  color: var(--d-lane-ink);
+  fill: var(--d-lane-ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.lane-title {
+  left: 18px;
+  line-height: 1;
+  position: absolute;
+  top: 19px;
+}
+
+.shape {
+  align-items: center;
+  color: var(--node-ink, var(--d-ink));
+  display: flex;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.shape-card,
+.card {
+  align-items: center;
+  background: var(--node-fill, var(--d-card));
+  border: 1px solid var(--node-stroke, var(--d-card-line));
+  border-radius: 10px;
+  box-shadow: 0 1px 1px rgb(16 24 40 / 5%);
+  display: flex;
+  gap: 10px;
+  padding: 0 12px;
+}
+
+.shape-card.s-new {
+  background: var(--node-fill, var(--d-new-card));
+  border-color: var(--node-stroke, var(--d-new-line));
+}
+
+.shape-card.s-changed {
+  background: var(--node-fill, var(--d-changed-card));
+  border-color: var(--node-stroke, var(--d-changed-line));
+}
+
+.shape-card.s-removed {
+  background: var(--node-fill, var(--d-removed-card));
+  border: 1px dashed var(--node-stroke, var(--d-removed-line));
+}
+
+.s-removed .texts {
+  opacity: 0.65;
+  text-decoration: line-through;
+}
+
+.s-removed .chip {
+  opacity: 0.6;
+}
+
+.shape-terminal {
+  background: var(--node-fill, var(--d-card));
+  border: 1px solid var(--node-stroke, var(--d-card-line));
+  border-radius: 999px;
+  justify-content: center;
+}
+
+.shape-circle {
+  background: var(--node-fill, var(--d-card));
+  border: 1px solid var(--node-stroke, var(--d-card-line));
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.shape-note {
+  background: var(--node-fill, var(--d-soft));
+  border: 1px solid var(--node-stroke, var(--d-card-line));
+  border-radius: 8px;
+  justify-content: center;
+}
+
+.shape-decision {
+  justify-content: center;
+}
+
+.decision-shape {
+  height: 100%;
+  inset: 0;
+  overflow: visible;
+  position: absolute;
+  width: 100%;
+}
+
+.decision-shape path {
+  fill: var(--node-fill, var(--d-card));
+  stroke: var(--node-stroke, var(--d-card-line));
+  stroke-width: 1;
+}
+
+.shape-start {
+  background: var(--d-ink);
+  border-radius: 50%;
+}
+
+.shape-end {
+  border: 2px solid var(--d-ink);
+  border-radius: 50%;
+}
+
+.shape-end::after {
+  background: var(--d-ink);
+  border-radius: 50%;
+  content: "";
+  inset: 3px;
+  position: absolute;
+}
+
+.shape-choice {
+  background: var(--d-card);
+  border: 1px solid var(--d-line);
+  border-radius: 4px;
+  transform: rotate(45deg) scale(0.72);
+}
+
+.shape-bar {
+  background: var(--d-ink);
+  border-radius: 4px;
+}
+
+.chip {
+  align-items: center;
+  background: var(--d-chip);
+  border-radius: 7px;
+  display: inline-flex;
+  flex: none;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.icon {
+  fill: none;
+  height: 16px;
+  stroke: var(--d-icon);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 16px;
+}
+
+.icon .solid {
+  fill: var(--d-icon);
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  line-height: 18px;
+  min-width: 0;
+  position: relative;
+}
+
+.shape-decision .texts,
+.shape-terminal .texts,
+.shape-circle .texts,
+.shape-note .texts {
+  align-items: center;
+  text-align: center;
+}
+
+.texts strong {
+  color: var(--node-ink, var(--d-ink));
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.texts code {
+  color: var(--d-muted);
+  font: 11px/18px var(--d-mono);
+  white-space: nowrap;
+}
+
+.pill {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 8.5px;
+  font-weight: 700;
+  height: 16px;
+  letter-spacing: 0.08em;
+  line-height: 14px;
+  padding: 0 7px;
+  position: absolute;
+  right: 10px;
+  top: -8px;
+}
+
+.s-new .pill {
+  background: var(--d-new-pill);
+  border-color: var(--d-new-pill-line);
+  color: var(--d-new-pill-ink);
+}
+
+.s-changed .pill {
+  background: var(--d-changed-pill);
+  border-color: var(--d-changed-pill-line);
+  color: var(--d-changed-pill-ink);
+}
+
+.s-removed .pill {
+  background: var(--d-removed-pill);
+  border-color: var(--d-removed-pill-line);
+  color: var(--d-removed-pill-ink);
+}
+
+.edge {
+  --line-color: var(--edge-color, var(--d-line));
+}
+
+.edge.s-new {
+  --line-color: var(--edge-color, var(--d-new));
+}
+
+.edge.s-changed {
+  --line-color: var(--edge-color, var(--d-changed));
+}
+
+.edge.s-removed {
+  --line-color: var(--edge-color, var(--d-removed));
+}
+
+.line,
+.cross {
+  fill: none;
+  stroke: var(--line-color);
+  stroke-width: 1.5;
+}
+
+.edge.thick .line {
+  stroke-width: 3;
+}
+
+.edge.dashed .line {
+  stroke-dasharray: 4 4;
+}
+
+.head {
+  fill: var(--line-color);
+}
+
+.edge-pill {
+  align-items: center;
+  background: var(--d-label);
+  border: 1px solid var(--d-label-line);
+  border-radius: 9px;
+  color: var(--d-label-ink);
+  display: flex;
+  flex-direction: column;
+  font-size: 10.5px;
+  font-weight: 500;
+  justify-content: center;
+  left: 0;
+  line-height: 14px;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.edge-pill.s-new {
+  color: var(--d-new-label);
+}
+
+.edge-pill.s-changed {
+  color: var(--d-changed-label);
+}
+
+.edge-pill.s-removed {
+  color: var(--d-removed-label);
+}
+
+.edge-label rect {
+  fill: var(--d-label);
+  stroke: var(--d-label-line);
+}
+
+.edge-label text,
+.step-number text,
+.seq-note text {
+  dominant-baseline: central;
+  text-anchor: middle;
+}
+
+.edge-label text {
+  fill: var(--d-label-ink);
+  font-size: 10.5px;
+  font-weight: 500;
+}
+
+.sequence {
+  display: block;
+}
+
+.lane {
+  fill: var(--d-lane);
+}
+
+.lifeline {
+  stroke: var(--d-line);
+  stroke-dasharray: 3 4;
+  stroke-width: 1;
+}
+
+.lifeline-end {
+  stroke: var(--d-removed);
+  stroke-width: 1.8;
+}
+
+.activation {
+  fill: var(--d-chip);
+  stroke: var(--d-line);
+  stroke-width: 1;
+}
+
+.step-number circle {
+  fill: var(--d-ink);
+}
+
+.step-number text {
+  fill: var(--d-card);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.seq-frame {
+  fill: var(--d-lane);
+  stroke: var(--d-card-line);
+}
+
+.seq-rect {
+  fill: var(--d-soft);
+}
+
+.seq-tag rect {
+  fill: var(--d-chip);
+  stroke: var(--d-card-line);
+}
+
+.seq-tag text {
+  dominant-baseline: central;
+  fill: var(--d-lane-ink);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+.seq-divider {
+  stroke: var(--d-card-line);
+  stroke-dasharray: 4 4;
+}
+
+.seq-note rect {
+  fill: var(--d-soft);
+  stroke: var(--d-card-line);
+}
+
+.seq-note text {
+  fill: var(--d-ink);
+  font-size: 12px;
+}
+
+:host([page]) {
+  background: var(--d-canvas);
+  inset: 0;
+  position: fixed;
+}
+
+:host([page]) .canvas,
+:host([page]) .diagram,
+.overlay .canvas,
+.overlay .diagram {
+  inset: 0;
+  position: absolute;
+}
+
+:host([page]) .frame,
+.overlay .frame {
+  border-radius: 0;
+  height: 100%;
+}
+
+:host([page]) .diagram-head,
+.overlay .diagram-head {
+  left: 12px;
+  margin: 0;
+  position: absolute;
+  top: 12px;
+  z-index: 5;
+}
+
+:host([page]) .tools {
+  right: 46px;
+  top: 12px;
+}
+
+:host([page]) .theme-toggle {
+  right: 12px;
+}
+
+:host([page]) .diagram,
+.overlay .diagram {
+  padding: 3rem 1.5rem 1.5rem;
+}
+
+:host([page]) .diagram svg {
+  max-height: 100%;
+}
+
+.diagram-frame {
+  position: relative;
+}
+
+.overlay {
+  background: var(--d-canvas);
+  border: 0;
+  color: inherit;
+  height: 100dvh;
+  margin: 0;
+  max-height: none;
+  max-width: none;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+.overlay .tools {
+  right: 80px;
+  top: 12px;
+}
+
+.overlay .theme-toggle {
+  right: 46px;
+}
+
+/* Mermaid sets a pixel limit on the element itself, which would stop it from filling the window. */
+.overlay .diagram svg {
+  height: 100%;
+  max-width: 100% !important;
+  width: 100%;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 12px;
+  z-index: 6;
+}
+
+.overlay-close {
+  font-size: 16px;
+  line-height: 1;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 6;
+}

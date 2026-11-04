@@ -16,15 +16,28 @@
       "members": ["hostConnected", "hostDisconnected"],
     },
   ],
+  "health": {
+    "thresholdOverrides": [
+      {
+        "files": ["src/internal/diagram/**"],
+        "maxCrap": 310,
+        "reason": "Fallow scores CRAP as untested here, because browser tests reach this code through the built bundle.",
+      },
+    ],
+  },
   // Tailwind reads its packages from CSS. Vite bundles the other packages into the published JS.
   // Consumers do not import those implementation packages at runtime.
   "ignoreDependencies": [
     "@tailwindcss/typography",
+    "@xyflow/react",
+    "elkjs",
     "mermaid",
     "micromark",
     "micromark-extension-gfm-strikethrough",
     "micromark-extension-gfm-task-list-item",
     "prismjs",
+    "react",
+    "react-dom",
     "tailwindcss",
   ],
 }
