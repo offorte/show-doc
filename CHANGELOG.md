@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.5](https://github.com/offorte/show-doc/compare/show-doc-v0.0.4...show-doc-v0.0.5) (2026-11-04)
+
+
+### Optimizations
+
+* draw Mermaid diagrams with React Flow ([#9](https://github.com/offorte/show-doc/issues/9)) ([50e825f](https://github.com/offorte/show-doc/commit/50e825f762c3c5da979b5008a9d475474b7e8e3b))
+
 ## [0.0.4](https://github.com/offorte/show-doc/compare/show-doc-v0.0.3...show-doc-v0.0.4) (2026-09-16)
 
 
