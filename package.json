@@ -73,7 +73,7 @@
     "fallow:check": "fallow --format compact --fail-on-issues --summary",
     "verify:source": "pnpm format:check && pnpm lint && pnpm typecheck",
     "verify:build": "pnpm test:browser && pnpm manifest:check && pnpm check:build && pnpm check:package && pnpm fallow:check",
-    "agent:verify": "pnpm verify:source && pnpm build && pnpm verify:build",
+    "agent:check": "pnpm verify:source && pnpm build && pnpm verify:build",
     "prepack": "pnpm build && pnpm manifest:check && pnpm check:build && pnpm check:package"
   },
   "dependencies": {

@@ -172,13 +172,13 @@ pnpm install --frozen-lockfile
 pnpm dev
 pnpm serve
 pnpm build
-pnpm agent:verify
+pnpm agent:check
 ```
 
 `pnpm serve` rebuilds the package and serves the CDN-backed showcase at
 `http://127.0.0.1:4173`.
 
-`pnpm agent:verify` checks formatting, lint, TypeScript, browser behavior, the Custom Elements
+`pnpm agent:check` checks formatting, lint, TypeScript, browser behavior, the Custom Elements
 Manifest, bundle limits, package contents, and unused code.
 
 ## Releases

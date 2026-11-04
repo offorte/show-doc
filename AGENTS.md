@@ -44,7 +44,7 @@ When an element, attribute, theme variable, or source grammar changes, update th
 Run the narrowest relevant command while working. Run the full gate before handoff:
 
 ```sh
-pnpm agent:verify
+pnpm agent:check
 ```
 
 Do not weaken a check to make it pass. Fix the source or the documented contract.
