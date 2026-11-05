@@ -203,7 +203,8 @@ Release Please reads Conventional Commit types on `main`. `fix:` and `opt:` prep
 release.
 
 Merging the Release Please pull request creates the GitHub release. The `Release package` workflow
-then verifies and publishes the npm package. After publication succeeds, it calls the separate
+then verifies and publishes the npm package. After publication succeeds, it purges the `@latest`
+files on jsDelivr and checks that jsDelivr serves the new version. It also calls the separate
 `Deploy Pages` workflow with the release tag. `Deploy Pages` only deploys the example site. It can
 also run manually.
 
