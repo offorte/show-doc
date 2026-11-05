@@ -23,6 +23,7 @@ jobs:
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
 
     steps:
       - name: Create or update release pull request
@@ -68,6 +69,52 @@ jobs:
 
       - name: Publish public package
         run: npm publish --access public
+
+  refresh_cdn:
+    name: Refresh jsDelivr latest files
+    needs: [prepare_release, publish_package]
+    if: needs.prepare_release.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions: {}
+
+    steps:
+      - name: Purge files when jsDelivr knows the release
+        env:
+          VERSION: ${{ needs.prepare_release.outputs.version }}
+        run: |
+          resolved_url="https://data.jsdelivr.com/v1/packages/npm/@offorte/show-doc/resolved?specifier=latest"
+          cdn_path="npm/@offorte/show-doc@latest/dist"
+
+          # jsDelivr throttles repeat purges of a path, so wait for the release and purge only once.
+          for attempt in {1..10}; do
+            resolved="$(curl -sS "$resolved_url" | jq -r .version || true)"
+            echo "Attempt $attempt: jsDelivr resolves latest to ${resolved:-no version}, expected $VERSION"
+            [ "$resolved" = "$VERSION" ] && break
+            sleep 30
+          done
+          if [ "$resolved" != "$VERSION" ]; then
+            echo "::error::jsDelivr does not resolve latest to $VERSION. Purge the files by hand."
+            exit 1
+          fi
+
+          for bundle in showdoc.js showdoc-mermaid.js; do
+            curl -fsS "https://purge.jsdelivr.net/$cdn_path/$bundle" || true
+          done
+
+          for attempt in {1..10}; do
+            stale=0
+            for bundle in showdoc.js showdoc-mermaid.js; do
+              served="$(curl -sSI "https://cdn.jsdelivr.net/$cdn_path/$bundle" | tr -d '\r' | awk 'tolower($1) == "x-jsd-version:" { print $2 }')"
+              echo "Attempt $attempt: $bundle serves ${served:-no version}, expected $VERSION"
+              [ "$served" = "$VERSION" ] || stale=1
+            done
+            [ "$stale" -eq 0 ] && exit 0
+            sleep 30
+          done
+
+          echo "::error::jsDelivr does not serve $VERSION for @latest. The purge can be throttled. Purge the files by hand."
+          exit 1
 
   deploy_pages:
     name: Deploy released Pages site
