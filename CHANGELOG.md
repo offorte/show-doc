@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.6](https://github.com/offorte/show-doc/compare/show-doc-v0.0.5...show-doc-v0.0.6) (2026-11-05)
+
+
+### Optimizations
+
+* add a floating section menu to shw-doc ([#11](https://github.com/offorte/show-doc/issues/11)) ([d2b2b1e](https://github.com/offorte/show-doc/commit/d2b2b1e6117974af9c797ac039687e7dec0db081))
+
 ## [0.0.5](https://github.com/offorte/show-doc/compare/show-doc-v0.0.4...show-doc-v0.0.5) (2026-11-04)
 
 
