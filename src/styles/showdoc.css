@@ -73,6 +73,12 @@ body {
   margin: 0;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html:has(shw-doc) {
+    scroll-behavior: smooth;
+  }
+}
+
 shw-doc,
 shw-header,
 shw-section,

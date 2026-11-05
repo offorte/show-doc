@@ -1,0 +1,273 @@
+.menu {
+  --menu-mark: calc(var(--menu-rail) - 0.5rem - 2px);
+  --menu-rail: 2.75rem;
+  --menu-width: 16rem;
+  font-size: 0.875rem;
+  inset-inline-end: 0.75rem;
+  line-height: 1.3;
+  position: fixed;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 10;
+}
+
+.panel,
+.toggle {
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  background: color-mix(in srgb, var(--shw-color-surface, #ffffff) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--shw-color-border, #dde2ea) 80%, transparent);
+  box-shadow: 0 0.5rem 1.75rem var(--shw-color-shadow, rgb(15 23 42 / 10%));
+}
+
+.panel {
+  border-radius: 0.9rem;
+  display: grid;
+  gap: 0.25rem;
+  grid-template-rows: minmax(0, 1fr) auto;
+  max-height: calc(100dvh - 2rem);
+  overflow: hidden;
+  padding: 0.25rem;
+  transition: width 200ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms;
+  width: var(--menu-rail);
+}
+
+.menu:hover .panel,
+.menu:has(:focus-visible) .panel {
+  transition-delay: 40ms;
+  width: var(--menu-width);
+}
+
+.links {
+  list-style: none;
+  margin: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  scrollbar-width: none;
+}
+
+.actions {
+  border-top: 1px solid color-mix(in srgb, var(--shw-color-border, #dde2ea) 80%, transparent);
+  display: flex;
+  gap: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+/* The closed rail clips the theme button, because only one button fits its width. */
+.actions .item {
+  flex: 1 1 0;
+  min-width: var(--menu-mark);
+  width: auto;
+}
+
+.actions .theme {
+  flex: 0 0 var(--menu-mark);
+}
+
+.item {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-radius: 0.6rem;
+  color: var(--shw-color-text, #293244);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  min-height: 2rem;
+  padding: 0;
+  text-align: start;
+  text-decoration: none;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+  width: 100%;
+}
+
+.item:hover {
+  background: color-mix(in srgb, var(--shw-color-accent, #4f46e5) 9%, transparent);
+  color: var(--shw-color-heading, #101827);
+}
+
+.item[aria-current] {
+  background: color-mix(in srgb, var(--shw-color-accent, #4f46e5) 9%, transparent);
+  color: var(--shw-color-accent, #4f46e5);
+  font-weight: 600;
+}
+
+.item:focus-visible,
+.toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--shw-color-accent, #4f46e5) 40%, transparent);
+  outline-offset: -3px;
+}
+
+.mark {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: var(--menu-mark);
+}
+
+.number {
+  background: color-mix(
+    in srgb,
+    var(--shw-color-accent, #4f46e5) 9%,
+    var(--shw-color-surface-muted, #f8fafc)
+  );
+  border: 1px solid color-mix(in srgb, var(--shw-color-border, #dde2ea) 80%, transparent);
+  border-radius: 0.4rem;
+  color: var(--shw-color-muted, #667085);
+  display: grid;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  height: 1.4rem;
+  line-height: 1;
+  place-items: center;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+  width: 1.4rem;
+}
+
+.item:hover .number {
+  border-color: var(--shw-color-accent, #4f46e5);
+  color: var(--shw-color-accent, #4f46e5);
+}
+
+.item[aria-current] .number {
+  background: var(--shw-color-accent, #4f46e5);
+  border-color: var(--shw-color-accent, #4f46e5);
+  color: var(--shw-color-on-accent, #ffffff);
+}
+
+.label {
+  flex: 1 1 0;
+  min-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-inline-end: 0.5rem;
+  padding-inline-start: 0.3rem;
+  text-overflow: ellipsis;
+  transition: opacity 120ms ease;
+  white-space: nowrap;
+}
+
+.menu:hover .label,
+.menu:has(:focus-visible) .label {
+  opacity: 1;
+  transition: opacity 160ms ease 80ms;
+}
+
+.icon {
+  display: block;
+  fill: none;
+  height: 1rem;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  width: 1rem;
+}
+
+.moon,
+.sun {
+  transition: stroke 200ms ease;
+}
+
+.moon {
+  stroke: light-dark(currentcolor, transparent);
+}
+
+.sun {
+  stroke: light-dark(transparent, currentcolor);
+}
+
+.toggle {
+  display: none;
+}
+
+/* The gutter beside the widest document fits the whole menu, so it stays open. */
+@media (min-width: 108rem) and (hover: hover) {
+  .menu {
+    --menu-width: 15rem;
+  }
+
+  .panel {
+    transition: none;
+    width: var(--menu-width);
+  }
+
+  .label {
+    opacity: 1;
+  }
+}
+
+@media (hover: none), (max-width: 40rem) {
+  .menu {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    inset-inline-end: 1rem;
+    top: auto;
+    translate: none;
+  }
+
+  .toggle {
+    border-radius: 50%;
+    color: var(--shw-color-heading, #101827);
+    cursor: pointer;
+    display: grid;
+    height: 3rem;
+    padding: 0;
+    place-items: center;
+    width: 3rem;
+  }
+
+  .panel,
+  .menu:hover .panel,
+  .menu:has(:focus-visible) .panel {
+    bottom: calc(100% + 0.5rem);
+    display: none;
+    inset-inline-end: 0;
+    max-height: calc(100dvh - 6rem);
+    position: absolute;
+    transition: none;
+    width: min(18rem, calc(100vw - 2rem));
+  }
+
+  .menu[data-open] .panel {
+    display: grid;
+  }
+
+  .item {
+    min-height: 2.75rem;
+  }
+
+  .actions .theme {
+    flex-basis: 2.75rem;
+    justify-content: center;
+  }
+
+  .label {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .item,
+  .number,
+  .label,
+  .moon,
+  .sun {
+    transition: none !important;
+  }
+}
+
+@media print {
+  .menu {
+    display: none;
+  }
+}

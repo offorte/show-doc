@@ -387,7 +387,30 @@
               "name": ""
             }
           ],
-          "members": [],
+          "members": [
+            {
+              "kind": "field",
+              "name": "nav",
+              "privacy": "public",
+              "type": {
+                "text": "\"auto\" | \"off\""
+              },
+              "default": "\"auto\"",
+              "description": "Section menu mode. `auto` shows it for four or more main sections. `off` hides it.",
+              "attribute": "nav"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "nav",
+              "type": {
+                "text": "\"auto\" | \"off\""
+              },
+              "default": "\"auto\"",
+              "description": "Section menu mode. `auto` shows it for four or more main sections. `off` hides it.",
+              "fieldName": "nav"
+            }
+          ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"

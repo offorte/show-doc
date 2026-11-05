@@ -100,6 +100,21 @@ restrained accents, distinct metrics, and subtle surface contrast.
 Use visual variety to explain the content: short comparisons in a grid, wide evidence in a full
 section, and secondary detail in a disclosure. Keep uncertain results and open decisions explicit.
 
+## Section menu
+
+`shw-doc` adds a floating menu when it has four or more main sections. A main section is a direct
+`shw-section` child with a `heading` and without `level="3"`. The menu links to each section, marks
+the current one, goes back to the top, and switches light and dark. Sections without an `id` get one
+from their heading, so a reader can share a link to a section. Set `nav="off"` to hide the menu:
+
+```html
+<shw-doc nav="off"></shw-doc>
+```
+
+Wide screens show the full menu in the page margin. Smaller screens show a narrow rail that opens on
+hover or keyboard focus. Touch and phone screens show a button in the corner. The menu does not
+print. The theme choice is not saved, so a reload uses the theme in the source again.
+
 ## Install the skill
 
 After you download or clone this repository, copy the complete [`skills/show-doc`](./skills/show-doc/)

@@ -74,7 +74,7 @@ available. Return the exact file path.
 
 | Element           | Compact API                                                             | Use                                              |
 | ----------------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
-| `shw-doc`         | -                                                                       | The one page canvas.                             |
+| `shw-doc`         | `nav?`                                                                  | The one page canvas.                             |
 | `shw-header`      | `heading`, `eyebrow?`                                                   | The one title and short Markdown lead.           |
 | `shw-summary`     | `heading?`                                                              | The answer before the evidence.                  |
 | `shw-section`     | `heading?`, `intro?`, `level?`                                          | A topic with an automatic divider.               |
@@ -94,6 +94,10 @@ available. Return the exact file path.
 Defaults reduce source. A summary heading is `Summary`. A section level is `2`. Grid columns are
 `2`. A collapsible summary is `Details`, and its content mode is `markdown`. Default tone is
 `neutral`, except callouts use `info`.
+
+A document with four or more direct `shw-section` children that have a `heading` and no `level="3"`
+gets a floating section menu automatically. Do not add a table of contents to these documents. Use
+`nav="off"` only when the menu would distract, such as on a page made for embedding.
 
 Tones are `info`, `success`, `warning`, `danger`, and `neutral`. Use them only when the meaning helps
 the reader.
