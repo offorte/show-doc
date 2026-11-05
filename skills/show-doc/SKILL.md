@@ -2,7 +2,7 @@
 name: show-doc
 description: Create compact, readable standalone HTML documents with Offorte ShowDoc components and Markdown when a human-facing artifact needs more visual structure than normal prose, or one full-page Mermaid diagram when the user asks for a Mermaid diagram.
 metadata:
-  version: "0.0.5" # x-release-please-version
+  version: "0.0.6" # x-release-please-version
 ---
 
 # ShowDoc
