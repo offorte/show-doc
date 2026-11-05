@@ -2,6 +2,7 @@
   container: shw-section / inline-size;
   display: block;
   min-width: 0;
+  scroll-margin-top: 1.5rem;
 }
 
 section,

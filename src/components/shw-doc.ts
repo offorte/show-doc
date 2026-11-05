@@ -1,7 +1,9 @@
-import { css, html, LitElement } from "lit";
+import { css, html, LitElement, type PropertyValues, unsafeCSS } from "lit";
 
 import { defineElement } from "../internal/define-element";
+import { SectionMenuController } from "../internal/section-menu-controller";
 import { hostStyles } from "../styles/component-styles";
+import sectionMenuStyles from "../styles/section-menu.css?inline";
 
 /**
  * Provides the page and document canvas for a ShowDoc artifact.
@@ -10,8 +12,13 @@ import { hostStyles } from "../styles/component-styles";
  * @slot - The complete visible document.
  */
 export class ShwDoc extends LitElement {
+  public static override properties = {
+    nav: { type: String },
+  };
+
   public static override styles = [
     hostStyles,
+    unsafeCSS(sectionMenuStyles),
     css`
       :host {
         background:
@@ -74,8 +81,20 @@ export class ShwDoc extends LitElement {
     `,
   ];
 
+  /** Section menu mode. `auto` shows it for four or more main sections. `off` hides it. */
+  public nav: "auto" | "off" = "auto";
+
+  readonly #menu = new SectionMenuController(this);
+
+  protected override willUpdate(changed: PropertyValues<this>): void {
+    if (changed.has("nav")) {
+      this.#menu.refresh();
+    }
+  }
+
   protected override render() {
-    return html`<main class="document"><slot></slot></main>`;
+    return html`<main class="document"><slot></slot></main>
+      ${this.#menu.render()}`;
   }
 }
 

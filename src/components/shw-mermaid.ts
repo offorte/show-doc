@@ -11,6 +11,7 @@ import { layoutDiagram } from "../internal/diagram/layout-diagram";
 import { readDiagram } from "../internal/diagram/read-diagram";
 import type { DiagramLayout } from "../internal/diagram/types";
 import { LightDomTextController } from "../internal/light-dom-text-controller";
+import { toggleTheme, usesDarkTheme } from "../internal/theme";
 import { hostStyles } from "../styles/component-styles";
 
 type MermaidThemeVariables = {
@@ -33,12 +34,6 @@ type MermaidThemeVariables = {
 
 let diagramNumber = 0;
 let renderQueue = Promise.resolve();
-
-function usesDarkTheme(): boolean {
-  const root = document.documentElement;
-  const explicitTheme = [root.dataset.shwTheme, root.dataset.theme].find(Boolean);
-  return explicitTheme === "dark";
-}
 
 function activeTheme(probe: HTMLElement): MermaidThemeVariables {
   const styles = getComputedStyle(probe);
@@ -260,16 +255,12 @@ export class ShwMermaid extends LitElement {
     this.requestUpdate();
   };
 
-  #toggleTheme(): void {
-    document.documentElement.dataset.shwTheme = usesDarkTheme() ? "light" : "dark";
-  }
-
   #renderThemeToggle() {
     return html`<button
       class="theme-toggle"
       type="button"
       aria-label="Switch light and dark"
-      @click=${this.#toggleTheme}
+      @click=${toggleTheme}
     >
       ◐
     </button>`;

@@ -29,6 +29,8 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           codeSplitting: false,
+          // Vite keeps whitespace in an ES library build unless this asks for it.
+          minify: true,
         },
       },
     },
