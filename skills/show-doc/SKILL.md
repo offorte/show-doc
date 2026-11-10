@@ -111,6 +111,8 @@ the reader.
 - Use `shw-code` without `language` for pseudocode and structural trees. Use `html`, `js`, `ts`, or
   `json` for syntax highlighting. Use `diff` for a supplied unified patch.
 - Use `shw-mermaid` when relationships, branches, data flow, or participant interactions matter.
+  Use a `block-beta` diagram when the position of each box carries the meaning: a layer stack,
+  nested groups, or a system overview with a fixed layout.
 - Put two or three comparable cards or stats in `shw-grid`.
 - Use a table only for aligned data. Table body cells support Markdown.
 - Use `shw-figure` when one visual needs a caption. Give visuals useful alternative text or labels.
@@ -224,8 +226,9 @@ The Mermaid bundle supports the full Mermaid package and makes no extra runtime 
 
 ## Mermaid diagrams
 
-ShowDoc draws flowcharts, state diagrams, and sequence diagrams itself. Mermaid draws every other
-diagram type, and any diagram with `click` links, icons, images, or half arrows.
+ShowDoc draws flowcharts, state diagrams, sequence diagrams, and block diagrams itself. Mermaid
+draws every other diagram type, and any diagram with `click` links, icons, images, half arrows, or
+block arrows.
 
 The page is HTML, so write `&lt;` for each `<` in the source. For example, write
 `state check &lt;&lt;choice&gt;&gt;`. Write a second line in a label as `\n`, not `<br/>`. The second
@@ -234,6 +237,9 @@ line appears as small code text.
 - A `subgraph` in a flowchart becomes a lane, a column with an uppercase title. Name each lane after
   what its parts do. A nested subgraph, a line from a node to itself, or a line to a subgraph gives a
   normal group layout instead of lanes.
+- Lanes place parts at the same step side by side. A wide lane shrinks the whole diagram. Stack the
+  parts of one lane with an invisible link, such as `web ~~~ app`. Each extra lane also shrinks the
+  text.
 - `:::new`, `:::changed`, and `:::removed` add a status pill. Use them only when the diagram compares
   two states.
 - `:::icon-code`, `window`, `box`, `play`, `queue`, `service`, `db`, `file`, `user`, `cloud`, or
@@ -241,6 +247,8 @@ line appears as small code text.
   every card has an icon.
 - A frontmatter title appears in a chip above the diagram. Text after `|` appears as grey code:
   `title: Container view | architecture-overview · hero`.
+- In a block diagram, write a status or an icon as a statement, such as `class web icon-window` or
+  `class api new`.
 
 ## Only a diagram
 

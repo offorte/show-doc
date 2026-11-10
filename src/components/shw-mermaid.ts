@@ -68,7 +68,7 @@ function configureMermaid(themeVariables: MermaidThemeVariables): void {
       useMaxWidth: true,
     },
     htmlLabels: false,
-    look: "classic",
+    look: "neo",
     securityLevel: "strict",
     secure: [
       "secure",

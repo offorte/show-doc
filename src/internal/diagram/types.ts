@@ -129,7 +129,23 @@ export interface SequenceModel {
   steps: SequenceStep[];
 }
 
-export type DiagramModel = GraphModel | SequenceModel;
+/** One grid cell of a block diagram. A span covers that many columns of its parent grid. */
+export type BlockCell =
+  | { kind: "node"; id: string; span: number }
+  | { kind: "group"; id: string; span: number; columns: number; cells: BlockCell[] }
+  | { kind: "space"; span: number };
+
+export interface BlockModel {
+  kind: "block";
+  heading: Heading;
+  columns: number;
+  cells: BlockCell[];
+  groups: GraphGroup[];
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
+export type DiagramModel = GraphModel | SequenceModel | BlockModel;
 
 export interface PlacedNode extends GraphNode, Box {
   titleLines: string[];

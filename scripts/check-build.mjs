@@ -96,7 +96,7 @@ for (const dependency of [
   "@xyflow/react - 12.12.0",
   "elkjs - 0.12.1",
   "lit - 3.3.3",
-  "mermaid - 11.17.2",
+  "mermaid - 12.3.0",
   "micromark - 4.0.2",
   "prismjs - 1.30.0",
   "react - 19.3.1",

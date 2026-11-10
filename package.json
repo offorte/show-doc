@@ -93,7 +93,7 @@
     "@xyflow/react": "12.12.0",
     "elkjs": "0.12.1",
     "fallow": "3.18.0",
-    "mermaid": "11.17.2",
+    "mermaid": "12.3.0",
     "micromark": "4.0.2",
     "micromark-extension-gfm-strikethrough": "2.1.0",
     "micromark-extension-gfm-task-list-item": "2.1.0",
