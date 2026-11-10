@@ -395,6 +395,49 @@ describe("Offorte ShowDoc", () => {
     expect(crossing).to.equal(false);
   });
 
+  it("draws a block diagram as cards in a grid", async () => {
+    await import("../dist/showdoc-mermaid.js");
+    const element = await fixture(html`<shw-mermaid label="Platform"></shw-mermaid>`);
+    element.textContent = [
+      "block-beta",
+      "columns 3",
+      'block:platform["Our platform"]:2',
+      "  columns 2",
+      '  web["Web"] app["App"]',
+      '  svc["Domain services"]:2',
+      "end",
+      'eva[("EVA")]',
+      "space:2",
+      'note["Shared foundation"]',
+      'svc -- "adapters" --> eva',
+      'platform["Our platform"] --> note',
+      "classDef hot fill:#fde68a",
+      "class web hot",
+      "class app new",
+    ].join("\n");
+    await aTimeout(0);
+    await waitForDiagram(element, 6, 2);
+    const root = element.shadowRoot;
+    const box = (id) => root.querySelector(`[data-id="${id}"]`).getBoundingClientRect();
+    const webCard = root.querySelector('[data-id="web"] .shape-card');
+
+    expect(root.querySelector(".group-box .lane-title").textContent).to.equal("Our platform");
+    expect(getComputedStyle(webCard).backgroundColor).to.equal("rgb(253, 230, 138)");
+    expect(root.querySelector('[data-id="app"] .pill').textContent).to.equal("NEW");
+    expect(box("web").top).to.equal(box("app").top);
+    expect(box("svc").top).to.be.greaterThan(box("web").bottom);
+    expect(box("svc").left).to.equal(box("web").left);
+    expect(box("svc").right).to.equal(box("app").right);
+    expect(box("eva").left).to.be.greaterThan(box("platform").right);
+    expect(box("note").top).to.be.greaterThan(box("platform").bottom);
+    expect(box("note").left).to.be.greaterThan(box("platform").right);
+    expect(root.querySelector(".edge-pill").textContent).to.equal("adapters");
+  });
+
+  it("leaves block arrows to Mermaid", async () => {
+    await expectMermaidDrawing('block-beta\nnext<["Next"]>(right)');
+  });
+
   it("draws state diagrams and sequence diagrams", async () => {
     await import("../dist/showdoc-mermaid.js");
     const states = await fixture(html`<shw-mermaid label="States"></shw-mermaid>`);

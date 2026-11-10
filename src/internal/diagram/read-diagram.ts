@@ -1,5 +1,8 @@
 import type {
+  BlockCell,
   BlockKind,
+  BlockModel,
+  DiagramModel,
   Direction,
   EdgeHead,
   GraphEdge,
@@ -63,8 +66,23 @@ interface RawActor {
   box?: unknown;
 }
 
+interface RawBlock {
+  id: string;
+  type: string;
+  label?: string;
+  widthInColumns?: number;
+  columns?: number;
+  classes?: string[];
+  styles?: string[];
+  children?: RawBlock[];
+}
+
 interface MermaidDb {
   getData?(): { nodes: RawNode[]; edges: RawEdge[] };
+  getBlocks?(): RawBlock[];
+  getBlock?(id: string): RawBlock | undefined;
+  getEdges?(): RawEdge[];
+  getClasses?(): Map<string, { styles: string[] }>;
   getLinks?(): Map<string, unknown>;
   getDirection?(): string | undefined;
   getDiagramTitle?(): string;
@@ -327,6 +345,62 @@ function readStateDiagram(db: MermaidDb, source: string): GraphModel | null {
   };
 }
 
+/** Returns null for a block arrow, which only Mermaid's own drawing has. */
+function readBlockDiagram(db: MermaidDb, source: string): BlockModel | null {
+  const blocks = db.getBlocks?.();
+  const rawEdges = db.getEdges?.();
+  if (blocks === undefined || rawEdges === undefined) {
+    return null;
+  }
+  const classDefs = db.getClasses?.();
+  const groups: GraphGroup[] = [];
+  const nodes: GraphNode[] = [];
+  let drawable = true;
+  const readCells = (list: RawBlock[], parentId: string | undefined): BlockCell[] =>
+    list.map((block): BlockCell => {
+      const span = Math.max(1, block.widthInColumns ?? 1);
+      if (block.type === "space") {
+        return { kind: "space", span };
+      }
+      // A line that repeats a group's shape, such as `g["G"] --> b`, changes its type but keeps its children.
+      if (block.type === "composite" || (block.children?.length ?? 0) > 0) {
+        groups.push({ id: block.id, label: readLines(block.label).join(" "), parentId });
+        const cells = readCells(block.children ?? [], block.id);
+        return { kind: "group", id: block.id, span, columns: block.columns ?? -1, cells };
+      }
+      if (block.type === "block_arrow") {
+        drawable = false;
+      }
+      const raw: RawNode = {
+        id: block.id,
+        shape: block.type,
+        cssClasses: (block.classes ?? []).join(" "),
+        cssCompiledStyles: (block.classes ?? []).flatMap(
+          (name) => classDefs?.get(name)?.styles ?? [],
+        ),
+        ...(block.label === undefined ? {} : { label: block.label }),
+        ...(block.styles === undefined ? {} : { cssStyles: block.styles }),
+      };
+      nodes.push(readGraphNode(raw, FLOWCHART_SHAPES, parentId));
+      return { kind: "node", id: block.id, span };
+    });
+  const cells = readCells(blocks, undefined);
+  if (!drawable) {
+    return null;
+  }
+  const byId = new Map(nodes.map((node) => [node.id, node]));
+
+  return {
+    kind: "block",
+    heading: readHeading(source, db.getDiagramTitle?.() ?? ""),
+    columns: db.getBlock?.("root")?.columns ?? -1,
+    cells,
+    groups,
+    nodes,
+    edges: rawEdges.map((edge) => readGraphEdge(edge, byId)),
+  };
+}
+
 function readSequenceHead(name: string): SequenceHead {
   if (name.includes("CROSS")) {
     return "cross";
@@ -520,17 +594,16 @@ function readSequence(db: MermaidDb, source: string): SequenceModel | null {
   };
 }
 
-export function readDiagram(
-  type: string,
-  db: unknown,
-  source: string,
-): GraphModel | SequenceModel | null {
+export function readDiagram(type: string, db: unknown, source: string): DiagramModel | null {
   const mermaidDb = db as MermaidDb;
   if (type.startsWith("flowchart")) {
     return readFlowchart(mermaidDb, source);
   }
   if (type === "stateDiagram" || type === "state") {
     return readStateDiagram(mermaidDb, source);
+  }
+  if (type === "block") {
+    return readBlockDiagram(mermaidDb, source);
   }
   return type === "sequence" ? readSequence(mermaidDb, source) : null;
 }

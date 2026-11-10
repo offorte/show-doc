@@ -152,12 +152,31 @@ showcase stays pinned to its matching package version.
 
 ## Diagrams
 
-`shw-mermaid` draws flowcharts, state diagrams, and sequence diagrams with cards, routed lines, and
-a dotted canvas that the reader can drag and zoom. An expand button shows any diagram over the full
-window, with a button for light and dark. Subgraphs become lanes. The classes `new`,
-`changed`, and `removed` add a status pill. A frontmatter title appears in a chip, and text after
-`|` appears as grey code. Mermaid draws all other diagram types. These diagrams use React Flow, so
-the Mermaid bundle includes React and shows a small React Flow link in the corner.
+`shw-mermaid` draws flowcharts, state diagrams, sequence diagrams, and block diagrams with cards,
+routed lines, and a dotted canvas that the reader can drag and zoom. An expand button shows any
+diagram over the full window, with a button for light and dark. Subgraphs become lanes. The classes
+`new`, `changed`, and `removed` add a status pill. A frontmatter title appears in a chip, and text
+after `|` appears as grey code. Mermaid draws all other diagram types. These diagrams use React
+Flow, so the Mermaid bundle includes React and shows a small React Flow link in the corner.
+
+A `block-beta` diagram places its cards in a grid. `columns` sets the grid width, `:2` makes a card
+or group span two columns, `space` leaves a cell empty, and `block:id["Title"] … end` draws a titled
+group with its own grid:
+
+<!-- prettier-ignore -->
+```html
+<shw-mermaid label="Platform">
+  block-beta
+    columns 3
+    block:platform["Platform"]:2
+      columns 2
+      web["Web"] app["App"]
+      services["Domain services"]:2
+    end
+    eva[("EVA")]
+    services --> eva
+</shw-mermaid>
+```
 
 Add the `page` attribute and leave out `shw-doc` to show one diagram in the full browser window:
 

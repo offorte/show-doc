@@ -12,6 +12,7 @@ export interface Measure {
   title(text: string): number;
   sub(text: string): number;
   label(text: string): number;
+  groupTitle(text: string): number;
 }
 
 export function createMeasure(host: Element): Measure {
@@ -29,6 +30,9 @@ export function createMeasure(host: Element): Measure {
     title: (text) => width(`600 13.5px ${family}`, text),
     sub: (text) => width(`11px ${MONO}`, text),
     label: (text) => width(`500 10.5px ${family}`, text),
+    // Matches .lane-title: 700 11px, uppercase, 0.12em letter spacing.
+    groupTitle: (text) =>
+      width(`700 11px ${family}`, text.toUpperCase()) + Math.ceil(text.length * 11 * 0.12),
   };
 }
 
