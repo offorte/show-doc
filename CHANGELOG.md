@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.7](https://github.com/offorte/show-doc/compare/show-doc-v0.0.6...show-doc-v0.0.7) (2026-11-10)
+
+
+### Optimizations
+
+* upgrade Mermaid to 12 and draw block diagrams natively ([#14](https://github.com/offorte/show-doc/issues/14)) ([61ae336](https://github.com/offorte/show-doc/commit/61ae3368f2de56371b3805cefe0934e77118e9be))
+
 ## [0.0.6](https://github.com/offorte/show-doc/compare/show-doc-v0.0.5...show-doc-v0.0.6) (2026-11-05)
 
 
