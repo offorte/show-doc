@@ -75,7 +75,7 @@ jobs:
     needs: [prepare_release, publish_package]
     if: needs.prepare_release.outputs.release_created == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions: {}
 
     steps:
@@ -87,7 +87,8 @@ jobs:
           cdn_path="npm/@offorte/show-doc@latest/dist"
 
           # jsDelivr throttles repeat purges of a path, so wait for the release and purge only once.
-          for attempt in {1..10}; do
+          # npm can list a release minutes late. jsDelivr's data API then caches npm data twice for 5 minutes.
+          for attempt in {1..40}; do
             resolved="$(curl -sS "$resolved_url" | jq -r .version || true)"
             echo "Attempt $attempt: jsDelivr resolves latest to ${resolved:-no version}, expected $VERSION"
             [ "$resolved" = "$VERSION" ] && break
